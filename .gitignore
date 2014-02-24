@@ -1,0 +1,11 @@
+*.typelib
+*.so
+*.gir
+*.vapi
+*.c
+*.h
+*.i
+*.cxx
+*.pyc
+*.pyo
+*~

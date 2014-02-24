@@ -9,3 +9,4 @@ To test:
 $ make clean && make
 $ sh run.sh
 
+For more information on using vala bindings with other languages, check out: https://github.com/antono/vala-object

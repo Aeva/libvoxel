@@ -1,0 +1,11 @@
+
+Requires:
+ - valac
+ - g-ir-compiler
+ - python
+ - libgee >= 0.8
+
+To test:
+$ make clean && make
+$ sh run.sh
+

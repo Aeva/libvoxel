@@ -16,6 +16,9 @@
  */
 
 
+using Gdk;
+
+
 namespace LibVoxel {
 
 
@@ -23,25 +26,57 @@ namespace LibVoxel {
 		/*
 		  This function creates a voxel model from a folder of PNG
 		  files.  The images within are assumed to only contain the
-		  colors black and white and will fail loudly if this is not
-		  the case.  The images are also assumed to be in order by
-		  file name.
+		  colors black and white.  If this is not the case, the color
+		  will be clamped.  The images are also assumed to be in order
+		  by file name.
 		 */
-
+		var files = get_files(model_dir, "png");
 		var model = new VoxelModel();
+		int z=0;
+		foreach (var file in files) {
+			try {
+				var path = model_dir + file.get_name();
+				var pixbuf = new Pixbuf.from_file(path);
+				stdout.printf(@"--> $path\n");
 
-		var path = File.new_for_path(model_dir);
-		var file_iter = path.enumerate_children(FileAttribute.STANDARD_NAME, 0, null);
-		var file_info = file_iter.next_file(null);
-		while (file_info != null) {
-			file_info = file_iter.next_file(null);
+				var pxdata = pixbuf.get_pixels_with_length();
+				int channels = pixbuf.get_n_channels();
+				int width = pixbuf.get_width();
+				int height = pixbuf.get_height();
+
+				int x = 0;
+				int y = 0;
+				int i = 0;
+				string line = "";
+				while (x < width && y < height) {
+					var sample = 0;
+					for (int s=i; s<i+channels; s+=1) {
+						sample += pxdata[s];
+					}
+					sample = sample/channels;
+
+					if (sample > 128) {
+						model.add(x, y, z);
+						line += " #";
+					}
+					else {
+						line += " _";
+					}
 
 
-			stdout.printf("%s\n", file_info.get_name());
-			
+					i += channels;
+					x += 1;
+					if (x >= width) {
+						x = 0;
+						y += 1;
+						stdout.printf(@"    $line\n");
+						line = "";
+					}
+				}
+				z+=1;
+			} catch (Error e) {
+			}
 		}
 		return model;
 	}
-
-
 }

@@ -23,14 +23,16 @@ namespace LibVoxel {
 		var model = new VoxelModel();
 
 		stdout.printf("Created the tree map.\n");
-
-		model.add(0, 0, 0);
-		model.add(0, 0, 0);
-		model.add(0, 0, 0);
-
-		model.add(1, 0, 0);
 		
+		int samples = 100000;
+		for (int i=0; i<samples; i+=1) {
+			model.add(0, 0, 0);
+		}
+		model.add(1, 0, 0);
 		int intensity = (int) model.read(0, 0, 0);
+		assert(model.count == 2);
+		assert(intensity == samples);
+		
 		stdout.printf("Voxel intensity score at (0, 0, 0): %d\n", intensity);
 		
 		intensity = (int) model.read(1, 0, 0);
@@ -44,6 +46,7 @@ namespace LibVoxel {
 
 
 	public void main() {
+		assert(true);
 		test_adding_data();
 	}
 }

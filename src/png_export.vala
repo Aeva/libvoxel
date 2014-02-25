@@ -16,69 +16,97 @@
  */
 
 
+using Gdk;
+
+
 namespace LibVoxel {
 
 
-	private void save_imgdata (string path, uint8[] imgdata, int width, int height) {
-		// write the image file for a given layer to disk
-		stdout.printf(@" ! writing $path\n");
-		
+	private Pixbuf make_buffer (uint8[] imgdata, int width, int height) {
+		/*
+		  Create and return a pixbuf object from provided image data.
+		*/
+
+
+		var colorspace = Colorspace.RGB;
+		int channels = 3;
+		int row_stride = width * channels;
+
+		stdout.printf(@"row_stride: $row_stride\n");
+		foreach (int x in imgdata) {
+			stdout.printf(@"~------- $x\n");
+		}
+
+		// FIXME: memory leak? (see "null" param)
+		var pixbuf = new Pixbuf.from_data(
+		    imgdata, colorspace, false, 8, width, height, row_stride, null);
+
+		var data_dump = pixbuf.get_pixels_with_length();
+		assert(data_dump.length == imgdata.length);
+
+		for (int i=0; i<data_dump.length; i+=1) {
+			assert(data_dump[i] == imgdata[i]);
+		}
+
+
+
+		return pixbuf;
 	}
 
 
-	private string gen_path (string path, string prefix, string suffix, int num, int digits) {
-		// generate the file name for a given layer in the model
-		string id = num.to_string();
-		while (id.length < digits) {
-			id = "0" + suffix;
+	private Pixbuf paint_layer (VoxelModel model, int z) {
+		/*
+		  Create the image data for a given layer.
+		 */
+
+		int x = model.min_x;
+		int y = model.min_y;
+
+		int w = model.width;
+		int h = model.height;
+
+		int channels = 3;
+		uint8[] img_data = {};
+		
+		while (x < w && y < h) {
+			bool has_data = model.read(x, y, z) > 0;
+			for (int s=0; s<channels; s+=1){ 
+				img_data += has_data ? 255 : 0;
+			}
+			x += 1;
+			if (x >= w) {
+				x = model.min_x;
+				y += 1;
+			}
 		}
-		return path + prefix + id + suffix;
+		
+		return make_buffer(img_data, w, h);
 	}
 
 
 	public void export_to_pngs (VoxelModel model, string model_dir) {
+		/*
+		  Take a VoxelModel and dump out it's contents as a folder of
+		  png files somewhere.
+		 */
 
 		stdout.printf("\n\n--> attempting export script\n");
 		assert(model.count > 0);
 		
-		int x = model.min_x;
-		int y = model.min_y;
-		int z = model.min_z;
-		int w = model.width;
-		int h = model.height;
-		int d = model.depth;
-
 		int line = 0;
-		int digits = d.to_string().length;
+		int digits = model.depth.to_string().length;
 
-		int i = 0;
-		var img_data = new uint8[w*h*3];
-		
-		while (x <= w && y <= h && z <= d) {
-			// step through the model layer by layer
+		for (int z = model.min_z; z< model.depth; z+=1) {
+			var buffer = paint_layer(model, z);
+			var out_path = gen_path(model_dir, "layer_", ".png", line, digits);
+			stdout.printf(@"Saving $out_path...?\n");
+			try {
+				buffer.savev(out_path, "png", {null}, {null});
+			} catch (Error e) {
+				stdout.printf(@"Failed to write to $out_path!\n");
+			}
 			
-
-			bool has_data = model.read(x, y, z) > 0;
-			for (int s=0; s<3; s+=1){ 
-				img_data[i+s] = has_data ? 255 : 0;
-			}
-
-
-			i += 1;
-			x += 1;
-			if (x > w) {
-				x = model.min_x;
-				y += 1;
-				if (y > h) {
-					i = 0;
-					y = model.min_y;
-					z += 1;
-
-					var out_path = gen_path(model_dir, "layer_", ".png", line, digits);
-					save_imgdata(out_path, img_data, w, h);
-					line +=1;
-				}
-			}
-		}	
+			line += 1;
+		}
 	}
 }

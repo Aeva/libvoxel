@@ -52,4 +52,19 @@ namespace LibVoxel {
 
 		return file_list;
 	}
+
+
+	private string gen_path (string path, string prefix, string suffix, int num, int digits) {
+		/*
+		  Generates a file path more or less in the following form:
+		  ./some/path/to/file/prefix_0001.suffix
+		*/
+		string id = num.to_string();
+		while (id.length < digits) {
+			id = "0" + suffix;
+		}
+		string result = path + prefix + id + suffix;
+		stdout.printf(@"### $result\n");
+		return result;
+	}
 }

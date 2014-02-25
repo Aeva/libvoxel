@@ -19,34 +19,29 @@
 namespace LibVoxel {
 
 
-	public void test_adding_data() {
+	public VoxelModel import_from_pngs (string model_dir) {
+		/*
+		  This function creates a voxel model from a folder of PNG
+		  files.  The images within are assumed to only contain the
+		  colors black and white and will fail loudly if this is not
+		  the case.  The images are also assumed to be in order by
+		  file name.
+		 */
+
 		var model = new VoxelModel();
 
-		stdout.printf("Created the tree map.\n");
-		
-		int samples = 10000;
-		for (int i=0; i<samples; i+=1) {
-			model.add(0, 0, 0);
+		var path = File.new_for_path(model_dir);
+		var file_iter = path.enumerate_children(FileAttribute.STANDARD_NAME, 0, null);
+		var file_info = file_iter.next_file(null);
+		while (file_info != null) {
+			file_info = file_iter.next_file(null);
+
+
+			stdout.printf("%s\n", file_info.get_name());
+			
 		}
-		model.add(1, 0, 0);
-		int intensity = (int) model.read(0, 0, 0);
-		assert(model.count == 2);
-		assert(intensity == samples);
-		
-		stdout.printf("Voxel intensity score at (0, 0, 0): %d\n", intensity);
-		
-		intensity = (int) model.read(1, 0, 0);
-		stdout.printf("Voxel intensity score at (1, 0, 0): %d\n", intensity);
-
-		intensity = (int) model.read(2, 0, 0);
-		stdout.printf("Voxel intensity score at (2, 0, 0): %d\n", intensity);
-
-		stdout.printf("Unique coordinates in the model: %d\n", model.count);
+		return model;
 	}
 
 
-	public void main() {
-		test_adding_data();
-		test_png_import();
-	}
 }

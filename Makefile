@@ -6,8 +6,9 @@ VC = valac
 GIR = g-ir-compiler
 
 # file names
-SRC = src/coord.vala src/voxeldata.vala src/voxelmodel.vala
-TEST_SRC = src/tests.vala
+SRC = src/coord.vala src/voxeldata.vala src/voxelmodel.vala \
+	src/png_import.vala src/png_export.vala
+TEST_SRC = src/tests.vala src/png_tests.vala
 TEST_OUT = debug/libvoxel_test
 
 NAMESPACE = LibVoxel
@@ -19,7 +20,7 @@ GIRFILE = $(NAMESPACE)-$(VERSION).gir
 TYPEFILE = $(NAMESPACE)-$(VERSION).typelib
 
 # paths
-LIBFLAGS = --pkg gee-0.8
+LIBFLAGS = --pkg gee-0.8 --pkg gio-2.0
 
 VFLAGS = $(LIBFLAGS) -X -fPIC -X -shared -X -w \
 	 --gir=$(GIRFILE) --library=$(LIBNAME) \

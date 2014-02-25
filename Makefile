@@ -6,7 +6,7 @@ VC = valac
 GIR = g-ir-compiler
 
 # file names
-SRC = src/libvoxel.vala src/coord.vala
+SRC = src/voxelmodel.vala src/coord.vala
 TEST_SRC = src/tests.vala
 TEST_OUT = debug/libvoxel_test
 

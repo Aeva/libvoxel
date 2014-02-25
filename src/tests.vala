@@ -61,6 +61,6 @@ namespace LibVoxel {
 		
 
 		test_adding_data();
-		test_png_import(test_data_path);
+		test_png_import_export(test_data_path);
 	}
 }

@@ -64,7 +64,6 @@ namespace LibVoxel {
 			id = "0" + suffix;
 		}
 		string result = path + prefix + id + suffix;
-		stdout.printf(@"### $result\n");
 		return result;
 	}
 }

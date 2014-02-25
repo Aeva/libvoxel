@@ -32,23 +32,9 @@ namespace LibVoxel {
 		int channels = 3;
 		int row_stride = width * channels;
 
-		stdout.printf(@"row_stride: $row_stride\n");
-		foreach (int x in imgdata) {
-			stdout.printf(@"~------- $x\n");
-		}
-
 		// FIXME: memory leak? (see "null" param)
 		var pixbuf = new Pixbuf.from_data(
 		    imgdata, colorspace, false, 8, width, height, row_stride, null);
-
-		var data_dump = pixbuf.get_pixels_with_length();
-		assert(data_dump.length == imgdata.length);
-
-		for (int i=0; i<data_dump.length; i+=1) {
-			assert(data_dump[i] == imgdata[i]);
-		}
-
-
 
 		return pixbuf;
 	}
@@ -61,10 +47,8 @@ namespace LibVoxel {
 
 		int x = model.min_x;
 		int y = model.min_y;
-
 		int w = model.width;
 		int h = model.height;
-
 		int channels = 3;
 		uint8[] img_data = {};
 		
@@ -86,13 +70,11 @@ namespace LibVoxel {
 		int digits = model.depth.to_string().length;
 		string out_path = gen_path(model_dir, "layer_", ".png", line, digits);
 
-		stdout.printf(@"Saving $out_path...?\n");
 		try {
 			buffer.savev(out_path, "png", {null}, {null});
 		} catch (Error e) {
-			stdout.printf(@"Failed to write to $out_path!\n");
+			stdout.printf(e.message + "\n");
 		}
-				
 		return;
 	}
 
@@ -103,11 +85,20 @@ namespace LibVoxel {
 		  png files somewhere.
 		 */
 
-		stdout.printf("\n\n--> attempting export script\n");
 		assert(model.count > 0);
-		
-		for (int z = model.min_z; z< model.depth; z+=1) {
-			paint_layer(model, z, model_dir);
+
+		var img_dir = File.new_for_path(model_dir);
+		bool abort = false;
+		try {
+			img_dir.make_directory(null);
+		} catch (Error e) {
+			abort = true;
+			stdout.printf(e.message + "\n");
+		}
+		if (!abort) {
+			for (int z = model.min_z; z< model.depth; z+=1) {
+				paint_layer(model, z, model_dir);
+			}
 		}
 	}
 }

@@ -6,7 +6,7 @@ VC = valac
 GIR = g-ir-compiler
 
 # file names
-SRC = libvoxel.vala
+SRC = src/libvoxel.vala
 LIBNAME = libvoxel
 GIRFILE = LibVoxel-0.1.gir
 TYPEFILE = LibVoxel-0.1.typelib

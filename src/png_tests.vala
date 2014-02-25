@@ -19,8 +19,9 @@
 namespace LibVoxel {
 
 
-	public void test_png_import() {
-		//import_from_pngs("test_data/tiny_cube/");
+	public void test_png_import(string test_data_path) {
+		var test_data = test_data_path + "tiny_cube/";
+		//import_from_pngs(test_data);
 	}
 
 

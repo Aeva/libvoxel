@@ -45,8 +45,22 @@ namespace LibVoxel {
 	}
 
 
-	public void main() {
+	public void main(string[] args) {
+		var exec_path = args[0];
+		var test_data_path = "";
+
+		// figure out where the test data is stored
+		string[] parts = exec_path.split("/");
+		parts.resize(parts.length-1);
+		foreach (string foo in parts) {
+			test_data_path += foo+"/";
+		}
+		test_data_path += "../test_data/";
+		
+		stdout.printf(@"##> $test_data_path\n");
+		
+
 		test_adding_data();
-		test_png_import();
+		test_png_import(test_data_path);
 	}
 }

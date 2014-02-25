@@ -19,49 +19,6 @@ using Gee;
 namespace LibVoxel {
 
 	
-	public class Coord : Object {
-		public int x;
-		public int y;
-		public int z;
-
-		public Coord(int x, int y, int z) {
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-	}
-
-
-	public int coord_cmp(Coord lhs, Coord rhs) {
-		// Returns negative if lhs < rhs, positive if lhs > rhs, and
-		// zero if the are equal.
-		
-		if (lhs.z < rhs.z) {
-			return -1;
-		}
-		else if (lhs.z > rhs.z) {
-			return 1;
-		}
-		else if (lhs.z == rhs.z) {
-			if (lhs.y < rhs.y) {
-				return -1;
-			}
-			else if (lhs.y > rhs.y) {
-				return 1;
-			}
-			else if (lhs.y == rhs.y) {
-				if (lhs.x < rhs.x) {
-					return -1;
-				}
-				else if (lhs.x > rhs.x) {
-					return 1;
-				}
-			}
-		}
-		return 0;
-	}
-
-
 	public class VoxelModel : Object {
 
 		// PROPERTIES

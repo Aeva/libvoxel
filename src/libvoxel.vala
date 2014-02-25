@@ -160,27 +160,4 @@ namespace LibVoxel {
 			}
 		} 
 	}
-
-	public void run_tests() {
-		var model = new VoxelModel();
-
-		stdout.printf("Created the tree map.\n");
-
-		model.add(0, 0, 0);
-		model.add(0, 0, 0);
-		model.add(0, 0, 0);
-
-		model.add(1, 0, 0);
-		
-		int intensity = (int) model.read(0, 0, 0);
-		stdout.printf("Voxel intensity score at (0, 0, 0): %d\n", intensity);
-		
-		intensity = (int) model.read(1, 0, 0);
-		stdout.printf("Voxel intensity score at (1, 0, 0): %d\n", intensity);
-
-		intensity = (int) model.read(2, 0, 0);
-		stdout.printf("Voxel intensity score at (2, 0, 0): %d\n", intensity);
-
-		stdout.printf("Unique coordinates in the model: %d\n", model.count);
-	}
 }

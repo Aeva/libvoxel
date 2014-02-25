@@ -7,34 +7,42 @@ GIR = g-ir-compiler
 
 # file names
 SRC = src/libvoxel.vala
+TEST_SRC = src/tests.vala
+TEST_OUT = debug/libvoxel_test
+
+NAMESPACE = LibVoxel
 LIBNAME = libvoxel
-GIRFILE = LibVoxel-0.1.gir
-TYPEFILE = LibVoxel-0.1.typelib
+LIBFILE = $(LIBNAME).so
+VERSION = 0.1
+
+GIRFILE = $(NAMESPACE)-$(VERSION).gir
+TYPEFILE = $(NAMESPACE)-$(VERSION).typelib
 
 # paths
 LIBFLAGS = --pkg gee-0.8
 
-VFLAGS = -X -fPIC -X -shared -X -w \
-	 --gir=$(GIRFILE) \
-	 --library=$(LIBNAME) -o $(LIBNAME).so
+VFLAGS = $(LIBFLAGS) -X -fPIC -X -shared -X -w \
+	 --gir=$(GIRFILE) --library=$(LIBNAME) \
+	 -o $(LIBFILE) $(SRC)
 
-GIRFLAGS = --shared-library=$(LIBNAME).so --output=$(TYPEFILE) $(GIRFILE)
+GIRFLAGS = --shared-library=$(LIBFILE) --output=$(TYPEFILE) $(GIRFILE)
 
-SRCSFLAGS =  -H $(LIBNAME).h -C --vapi=$(LIBNAME).vapi --library=$(LIBNAME)
-
-
+DEBUG_FLAGS = $(LIBFLAGS) -g --save-temps -X -w $(SRC) $(TEST_SRC) -o $(TEST_OUT)
 
 
-all: libvoxel.so LibVoxel-0.1.typelib c-source
+
+all: libvoxel.so $(TYPEFILE)
 
 libvoxel.so:
-	$(VC) $(LIBFLAGS) $(VFLAGS) $(SRC)
+	$(VC) $(VFLAGS)
 
-LibVoxel-0.1.typelib:
+$(TYPEFILE):
 	$(GIR) $(GIRFLAGS)
 
-c-source:
-	$(VC) $(LIBFLAGS) $(SRCSFLAGS) $(SRC)
+debug:
+	mkdir debug
+	$(VC) $(DEBUG_FLAGS)
 
 clean:
 	rm -fr $(shell cat .gitignore)
+	rm -fr debug

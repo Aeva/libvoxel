@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from gi.repository.LibVoxel import VoxelModel, run_tests
+from gi.repository.LibVoxel import VoxelModel
 
 
 
@@ -19,16 +19,3 @@ assert foo.read(1,0,0) == 0
 
 
 print "--> Success!"
-print "\n2) Running in-module test function:\n"
-run_tests()
-
-print "--> Done.\n"
-
-
-
-
-
-
-
-
-

@@ -42,6 +42,7 @@ $(TYPEFILE):
 debug:
 	mkdir debug
 	$(VC) $(DEBUG_FLAGS)
+	mv src/*.c debug/
 
 clean:
 	rm -fr $(shell cat .gitignore)

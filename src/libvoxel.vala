@@ -65,7 +65,7 @@ namespace LibVoxel {
 	public class VoxelModel : Object {
 
 		// PROPERTIES
-		public TreeMap<Coord, uint8> __tree;
+		public TreeMap<Coord, uint> __tree;
 		public int count { get; private set; default=0; }
 	   
 		public int? min_x { get; private set; default=null; }
@@ -106,7 +106,7 @@ namespace LibVoxel {
 		// METHODS
 
 		construct {
-			this.__tree = new TreeMap<Coord, uint8>(coord_cmp);
+			this.__tree = new TreeMap<Coord, uint>(coord_cmp);
 		}
 
 		public uint read(int x, int y, int z) {

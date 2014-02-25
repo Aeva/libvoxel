@@ -54,7 +54,7 @@ namespace LibVoxel {
 	}
 
 
-	private Pixbuf paint_layer (VoxelModel model, int z) {
+	private void paint_layer (VoxelModel model, int z, string model_dir) {
 		/*
 		  Create the image data for a given layer.
 		 */
@@ -80,7 +80,20 @@ namespace LibVoxel {
 			}
 		}
 		
-		return make_buffer(img_data, w, h);
+		var buffer = make_buffer(img_data, w, h);
+
+		int line = model.max_z + z;
+		int digits = model.depth.to_string().length;
+		string out_path = gen_path(model_dir, "layer_", ".png", line, digits);
+
+		stdout.printf(@"Saving $out_path...?\n");
+		try {
+			buffer.savev(out_path, "png", {null}, {null});
+		} catch (Error e) {
+			stdout.printf(@"Failed to write to $out_path!\n");
+		}
+				
+		return;
 	}
 
 
@@ -93,20 +106,8 @@ namespace LibVoxel {
 		stdout.printf("\n\n--> attempting export script\n");
 		assert(model.count > 0);
 		
-		int line = 0;
-		int digits = model.depth.to_string().length;
-
 		for (int z = model.min_z; z< model.depth; z+=1) {
-			var buffer = paint_layer(model, z);
-			var out_path = gen_path(model_dir, "layer_", ".png", line, digits);
-			stdout.printf(@"Saving $out_path...?\n");
-			try {
-				buffer.savev(out_path, "png", {null}, {null});
-			} catch (Error e) {
-				stdout.printf(@"Failed to write to $out_path!\n");
-			}
-			
-			line += 1;
+			paint_layer(model, z, model_dir);
 		}
 	}
 }

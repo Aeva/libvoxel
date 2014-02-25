@@ -5,8 +5,17 @@ Requires:
  - python
  - libgee >= 0.8
 
-To test:
+To test bindings:
 $ make clean && make
 $ sh run.sh
+
+To run unit tests:
+$ make clean && make debug
+$ ./debug/libvoxel_test
+
+If tests fail, you can step through with a debugger like so:
+$ cd debug
+$ nemiver libvoxel_test
+
 
 For more information on using vala bindings with other languages, check out: https://github.com/antono/vala-object

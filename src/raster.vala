@@ -49,11 +49,9 @@ namespace LibVoxel.Raster {
 		Coord2d[] points = {quad.a, quad.b, quad.c, quad.d};
 		Coord2d[,] pairings = {
 			{ quad.a, quad.b },
-			{ quad.a, quad.c },
-			{ quad.a, quad.d },
 			{ quad.b, quad.c },
-			{ quad.b, quad.d },
 			{ quad.c, quad.d },
+			{ quad.d, quad.a },
 			};
 
 		double y_min = quad.a.y;

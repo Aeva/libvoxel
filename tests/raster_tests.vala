@@ -60,19 +60,9 @@ namespace LibVoxel.Tests {
 		var d = new Coord2d(-10, -8);
 		var quad = new Quad<Coord2d>(a,b,c,d);
 
-		quad_raster(model, quad, 0);
-		
-
 		stdout.printf("--> Testing line draw function.\n");
-		string line;
-		for (int y=-12; y<=12; y+=1) {
-			line = ">> ";
-			for (int x=-12; x<=12; x+=1) {
-				var val = model.read(x, y, 0);
-				line += val>0 ? " #" : " _";
-			}
-			stdout.printf(line+"\n");
-		}
+		quad_raster(model, quad, 0);
+		plot(model, 0);
 
 		var export = export_base + "quad_raster/"; 
 		stdout.printf(@"--> Quad rasterization test exported to $export\n");

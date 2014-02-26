@@ -66,4 +66,22 @@ namespace LibVoxel {
 		string result = path + prefix + id + suffix;
 		return result;
 	}
+
+
+	public void plot(VoxelModel model, int z) {
+		string line;
+		for (int y=model.min_y-2; y<=model.max_y+2; y+=1) {
+			line = "   ";
+			for (int x=model.min_x-2; x<=model.max_x+2; x+=1) {
+				var val = model.read(x, y, 0);
+				if (x==0 || y==0) {
+					line += val>0 ? " @" : " +";;
+				}
+				else {
+					line += val>0 ? " #" : " -";
+				}
+			}
+			stdout.printf(line+"\n");
+		}
+	}
 }

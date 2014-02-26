@@ -16,7 +16,7 @@
  */
 
 
-namespace LibVoxel {
+namespace LibVoxel.Tests {
 
 
 	public void test_adding_data() {
@@ -47,20 +47,20 @@ namespace LibVoxel {
 
 	public void main(string[] args) {
 		var exec_path = args[0];
-		var test_data_path = "";
+		var base_path = "";
 
 		// figure out where the test data is stored
 		string[] parts = exec_path.split("/");
 		parts.resize(parts.length-1);
 		foreach (string foo in parts) {
-			test_data_path += foo+"/";
+			base_path += foo+"/";
 		}
-		test_data_path += "../tests/data/";
-		
-		stdout.printf(@"##> $test_data_path\n");
-		
+
+		var data_path = base_path + "../tests/data/";
 
 		test_adding_data();
-		test_png_import_export(test_data_path);
+		test_png_import_export(data_path, base_path);
+		
+		raster_tests(data_path, base_path);
 	}
 }

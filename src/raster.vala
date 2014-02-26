@@ -16,17 +16,15 @@
  */
 
 
-namespace LibVoxel {
+using LibVoxel.Math;
 
 
-	public void test_png_import_export(string data_path, string export_base) {
-		string import_path = data_path + "tiny_cube/";
-		string export_path = export_base + "tiny_cube_export/";
+namespace LibVoxel.Raster {
 
-		stdout.printf(@"--> Attempting to import model from: $import_path\n");
-		var model = import_from_pngs(import_path);
-
-		stdout.printf(@"--> Attempting to save imported model to: $export_path\n");
-		export_to_pngs(model, export_path);
+	public void draw_line(VoxelModel model, Coord2d a, Coord2d b, int z) {
+		/*
+		 */
+		
 	}
+
 }

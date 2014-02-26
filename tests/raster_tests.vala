@@ -16,17 +16,28 @@
  */
 
 
-namespace LibVoxel {
+using LibVoxel.Math;
+using LibVoxel.Raster;
 
 
-	public void test_png_import_export(string data_path, string export_base) {
-		string import_path = data_path + "tiny_cube/";
-		string export_path = export_base + "tiny_cube_export/";
+namespace LibVoxel.Tests {
 
-		stdout.printf(@"--> Attempting to import model from: $import_path\n");
-		var model = import_from_pngs(import_path);
+	public void raster_tests(string data_path, string export_base) {
+		var model = new VoxelModel();
+		var start = new Coord2d(-2, -2);
+		var end = new Coord2d(2, 2);
+		draw_line(model, start, end, 0);
 
-		stdout.printf(@"--> Attempting to save imported model to: $export_path\n");
-		export_to_pngs(model, export_path);
+		assert(model.read(-2, -2, 0) == 1);
+		assert(model.read(-1, -1, 0) == 1);
+		assert(model.read(0, 0, 0) == 1);
+		assert(model.read(1, 1, 0) == 1);
+		assert(model.read(2, 2, 0) == 1);
+
+		var export = export_base + "line_raster/"; 
+		stdout.printf("--> Line rasterization test to $export\n");
+		export_to_pngs(model, export);
 	}
+
+
 }

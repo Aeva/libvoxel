@@ -19,12 +19,16 @@
 namespace LibVoxel {
 
 
-	public class Coord : Object {
+	public class VoxelCoord : Object {
+		/*
+		  X, Y, and Z are expressed as integers, and coorespond to
+		  voxel spacial coordinates.
+		 */
 		public int x;
 		public int y;
 		public int z;
 
-		public Coord(int x, int y, int z) {
+		public VoxelCoord(int x, int y, int z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
@@ -32,7 +36,7 @@ namespace LibVoxel {
 	}
 
 
-	public int coord_cmp(Coord lhs, Coord rhs) {
+	public int coord_cmp(VoxelCoord lhs, VoxelCoord rhs) {
 		// Returns negative if lhs < rhs, positive if lhs > rhs, and
 		// zero if the are equal.
 		

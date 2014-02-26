@@ -8,7 +8,7 @@ GIR = g-ir-compiler
 # file names
 SRC = src/coord.vala src/voxeldata.vala src/voxelmodel.vala \
 	src/png_import.vala src/png_export.vala \
-	src/etc.vala
+	src/etc.vala src/math.vala
 TEST_SRC = src/tests.vala src/png_tests.vala
 TEST_OUT = debug/libvoxel_test
 

@@ -71,13 +71,13 @@ namespace LibVoxel {
 		public int? max_z { get; protected set; default=null; }
 
 		// Non-interface Properties:
-		public TreeMap<Coord, IVoxelData?> __tree;
+		public TreeMap<VoxelCoord, IVoxelData?> __tree;
 
 
 		// Methods:
 
 		construct {
-			this.__tree = new TreeMap<Coord, IVoxelData?>(coord_cmp);
+			this.__tree = new TreeMap<VoxelCoord, IVoxelData?>(coord_cmp);
 		}
 
 
@@ -86,7 +86,7 @@ namespace LibVoxel {
 			   Returns the intensity value at a given coordinate.
 			*/
 
-			var vec = new Coord(x, y, z);
+			var vec = new VoxelCoord(x, y, z);
 			IVoxelData? datum = this.__tree[vec];
 			if (datum == null) {
 				return 0;
@@ -111,7 +111,7 @@ namespace LibVoxel {
 				max_z = z;
 			}
 
-			var vec = new Coord(x, y, z);
+			var vec = new VoxelCoord(x, y, z);
 			IVoxelData? datum = this.__tree[vec];
 			if (datum == null) {
 				datum = new VoxelData();

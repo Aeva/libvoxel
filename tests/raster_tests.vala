@@ -24,18 +24,28 @@ namespace LibVoxel.Tests {
 
 	public void raster_tests(string data_path, string export_base) {
 		var model = new VoxelModel();
-		var start = new Coord2d(-2, -2);
-		var end = new Coord2d(2, 2);
+
+		double low = -10;
+		double high = 10;
+
+		var start = new Coord2d(low, low);
+		var end = new Coord2d(high, high);
 		draw_line(model, start, end, 0);
 
-		assert(model.read(-2, -2, 0) == 1);
-		assert(model.read(-1, -1, 0) == 1);
-		assert(model.read(0, 0, 0) == 1);
-		assert(model.read(1, 1, 0) == 1);
-		assert(model.read(2, 2, 0) == 1);
-
+		stdout.printf("--> Testing line draw function.\n");
+		string line;
+		for (int y=(int)low; y<high; y+=1) {
+			line = ">> ";
+			for (int x=(int)low; x<high; x+=1) {
+				int expected = x==y ? 1 : 0;
+				assert(model.read(x, y, 0) == expected);
+				line += x==y ? " #" : " _";
+			}
+			stdout.printf(line+"\n");
+		}
+		
 		var export = export_base + "line_raster/"; 
-		stdout.printf("--> Line rasterization test to $export\n");
+		stdout.printf(@"--> Line rasterization test to $export\n");
 		export_to_pngs(model, export);
 	}
 

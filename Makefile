@@ -19,7 +19,7 @@ GIRFILE = $(NAMESPACE)-$(VERSION).gir
 TYPEFILE = $(NAMESPACE)-$(VERSION).typelib
 
 # paths
-LIBFLAGS = --pkg gee-0.8 --pkg gio-2.0 --pkg Gdk-3.0
+LIBFLAGS = --pkg gee-0.8 --pkg gio-2.0 --pkg Gdk-3.0 -X -lm
 
 VFLAGS = $(LIBFLAGS) -X -fPIC -X -shared -X -w \
 	 --gir=$(GIRFILE) --library=$(LIBNAME) \

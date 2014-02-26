@@ -21,7 +21,7 @@ namespace LibVoxel {
 
 	public void test_png_import_export(string test_data_path) {
 		string import_path = test_data_path + "tiny_cube/";
-		string export_path = test_data_path + "../debug/tiny_cube_export/";
+		string export_path = test_data_path + "../../debug/tiny_cube_export/";
 
 		stdout.printf(@"--> Attempting to import model from: $import_path\n");
 		var model = import_from_pngs(import_path);

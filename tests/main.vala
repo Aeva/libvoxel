@@ -55,7 +55,7 @@ namespace LibVoxel {
 		foreach (string foo in parts) {
 			test_data_path += foo+"/";
 		}
-		test_data_path += "../test_data/";
+		test_data_path += "../tests/data/";
 		
 		stdout.printf(@"##> $test_data_path\n");
 		

@@ -43,6 +43,7 @@ debug:
 	mkdir debug
 	$(VC) $(DEBUG_FLAGS)
 	mv src/*.c debug/
+	mv tests/*.c debug/
 
 clean:
 	rm -fr $(shell cat .gitignore)

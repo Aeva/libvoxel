@@ -49,6 +49,21 @@ namespace LibVoxel.Math {
 	}
 
 
+	public class Quad<coord> : Object {
+		public coord a;
+		public coord b;
+		public coord c;
+		public coord d;
+		
+		public Quad(coord a, coord b, coord c, coord d) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+			this.d = d;
+		}
+	}
+
+
 	public double mix(double a, double b, double i) {
 		/*
 		  Returns the linear blend between a and b.  'i' is assumed to

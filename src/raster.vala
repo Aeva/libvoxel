@@ -22,8 +22,10 @@ using LibVoxel.Math;
 
 namespace LibVoxel.Raster {
 
+
 	public void draw_line(VoxelModel model, Coord2d a, Coord2d b, int z) {
 		/*
+		  Draw a line along a given 2D x/y plane within a voxel model.
 		 */
 		var low = a.x < b.x ? a : b;
 		var high = a.x < b.x ? b : a;
@@ -33,14 +35,70 @@ namespace LibVoxel.Raster {
 		
 		for (var x = x1; x<=x2; x+=1) {
 			var i = (x-x1) / (x2-x1);
-			var y = floor(mix(x1, x2, i));
-
-			int _x = (int) x;
-			int _y = (int) y;
-			stdout.printf(@"Drawing at $_x $_y\n");
-
-
+			var y = floor(mix(low.y, high.y, i));
 			model.add((int) x, (int) y, z);
+		}
+	}
+
+
+	public void quad_raster(VoxelModel model, Quad<Coord2d> quad, int z) {
+		/*
+		  Fill in a quad on a given 2D x/y plane within a voxel model.
+		*/
+		
+		Coord2d[] points = {quad.a, quad.b, quad.c, quad.d};
+		Coord2d[,] pairings = {
+			{ quad.a, quad.b },
+			{ quad.a, quad.c },
+			{ quad.a, quad.d },
+			{ quad.b, quad.c },
+			{ quad.b, quad.d },
+			{ quad.c, quad.d },
+			};
+
+		double y_min = quad.a.y;
+		double y_max = quad.a.y;
+		for (int i=1; i<points.length; i+=1) {
+			// yes, starting at i=1 is intentional
+			Coord2d point = points[i];
+			if (point.y < y_min) {
+				y_min = point.y;
+			}
+			if (point.y > y_max) {
+				y_max = point.y;
+			}
+		}
+
+		stdout.printf(@" min value: $y_min, max value: $y_max\n");
+
+		for (double y=y_min; y<= y_max; y+=1) {
+			Coord2d? first = null;
+			Coord2d? second = null;
+			
+			for (int i=0; i<pairings.length[0]; i+=1) {
+				Coord2d a = pairings[i,0];
+				Coord2d b = pairings[i,1];
+				var x = between_2d(y, a, b); // x intersection
+				if (x != null) {
+					if (first == null) {
+						first = new Coord2d(floor(x), y);
+					}
+					else if (second == null) {
+						second = new Coord2d(floor(x), y);
+						break;
+					}
+				}
+			}
+			
+			if (first != null && second != null) {
+				var x1 = first.x;
+				var y1 = first.y;
+				var x2 = second.x;
+				var y2 = second.y;
+			   
+				stdout.printf(@"($x1, $y1), ($x2, $y2)\n");
+				draw_line(model, first, second, z);
+			}
 		}
 	}
 }

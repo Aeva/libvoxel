@@ -22,7 +22,8 @@ using LibVoxel.Raster;
 
 namespace LibVoxel.Tests {
 
-	public void raster_tests(string data_path, string export_base) {
+
+	private void line_test(string data_path, string export_base) {
 		var model = new VoxelModel();
 
 		double low = -10;
@@ -45,9 +46,43 @@ namespace LibVoxel.Tests {
 		}
 		
 		var export = export_base + "line_raster/"; 
-		stdout.printf(@"--> Line rasterization test to $export\n");
+		stdout.printf(@"--> Line rasterization test exported to $export\n");
 		export_to_pngs(model, export);
 	}
 
+
+	private void quad_test(string data_path, string export_base) {
+		var model = new VoxelModel();
+
+		var a = new Coord2d(-8, 5);
+		var b = new Coord2d(10, 10);
+		var c = new Coord2d(8, -10);
+		var d = new Coord2d(-10, -8);
+		var quad = new Quad<Coord2d>(a,b,c,d);
+
+		quad_raster(model, quad, 0);
+		
+
+		stdout.printf("--> Testing line draw function.\n");
+		string line;
+		for (int y=-12; y<=12; y+=1) {
+			line = ">> ";
+			for (int x=-12; x<=12; x+=1) {
+				var val = model.read(x, y, 0);
+				line += val>0 ? " #" : " _";
+			}
+			stdout.printf(line+"\n");
+		}
+
+		var export = export_base + "quad_raster/"; 
+		stdout.printf(@"--> Quad rasterization test exported to $export\n");
+		export_to_pngs(model, export);
+	}
+
+
+	public void raster_tests(string data_path, string export_base) {
+		line_test(data_path, export_base);
+		quad_test(data_path, export_base);
+	}
 
 }

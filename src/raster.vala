@@ -34,9 +34,13 @@ namespace LibVoxel.Raster {
 	    double x2 = floor(high.x);
 		
 		for (var x = x1; x<=x2; x+=1) {
-			var i = (x-x1) / (x2-x1);
-			var y = floor(mix(low.y, high.y, i));
+			double y = low.y;
+			if (x2 != x1) {
+				var i = (x-x1) / (x2-x1);
+				y = floor(mix(low.y, high.y, i));
+			}
 			model.add((int) x, (int) y, z);
+				
 		}
 	}
 

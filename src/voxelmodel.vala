@@ -103,12 +103,12 @@ namespace LibVoxel {
 			*/
 
 			if (this.count == 0) {
-				min_x = x;
-				min_y = y;
-				min_z = z;
-				max_x = x;
-				max_y = y;
-				max_z = z;
+				this.min_x = x;
+				this.min_y = y;
+				this.min_z = z;
+				this.max_x = x;
+				this.max_y = y;
+				this.max_z = z;
 			}
 
 			var vec = new VoxelCoord(x, y, z);
@@ -119,22 +119,22 @@ namespace LibVoxel {
 				this.count += 1;
 
 				if (x < min_x) {
-					min_x = x;
+					this.min_x = x;
 				}
 				if (x > max_x) {
-					max_x = x;
+					this.max_x = x;
 				}
 				if (y < min_y) {
-					min_y = y;
+					this.min_y = y;
 				}
 				if (y > max_y) {
-					max_y = y;
+					this.max_y = y;
 				}
 				if (z < min_z) {
-					min_z = x;
+					this.min_z = x;
 				}
 				if (z > max_z) {
-					max_z = x;
+					this.max_z = x;
 				}
 			}
 			datum.samples += 1;

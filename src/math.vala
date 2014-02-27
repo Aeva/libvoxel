@@ -116,8 +116,15 @@ namespace LibVoxel.Math {
 		}
 
 		if (y >= low.y && y <= high.y ) {
-			var i = (y-low.y) / (high.y-low.y);
-			result = mix_2d(a, b, i).x;
+			var foo = (y-low.y);
+			var bar = (high.y-low.y);
+			if (bar != 0) {
+				var i = foo / bar;
+				result = mix_2d(low, high, i).x;
+			}
+			else {
+				result = low.x;
+			}
 		}
 		return result;
 	}
@@ -130,7 +137,6 @@ namespace LibVoxel.Math {
 		  endpoints, otherwise returns a 2D coordinate that
 		  cooresponds for the value of 'z' in that line segment.
 		*/
-
 		Coord2d? result = null;
 		var low = a.z < b.z ? a : b;
 		var high = a.z < b.z ? b : a;

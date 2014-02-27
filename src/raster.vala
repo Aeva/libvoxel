@@ -95,4 +95,66 @@ namespace LibVoxel.Raster {
 			}
 		}
 	}
+
+	
+	public void frustum_raster (VoxelModel model, Quad<Coord3d> lhs, Quad<Coord3d> rhs) {
+		/*
+		  Rasterizes a quadrilateral frustum defined by its front and
+		  back planes.  Not specific to frustums despite name and
+		  intention, should work with any convex hexahedron.
+		 */
+
+		double min_z = lhs.a.z;
+		double max_z = lhs.a.z;
+		
+		Coord3d[] point_set = {
+			lhs.b, lhs.c, lhs.d,
+			rhs.a, rhs.b, rhs.c, rhs.d,
+		};
+
+		foreach (var point in point_set) {
+			if (point.z < min_z) {
+				min_z = point.z;
+			}
+			if (point.z > min_z) {
+				max_z = point.z;
+			}
+		};
+
+		Coord3d[,] pairings = {
+			{ lhs.a, lhs.b },
+			{ lhs.b, lhs.c },
+			{ lhs.c, lhs.d },
+			{ lhs.d, lhs.a },
+			{ lhs.a, rhs.a },
+			{ lhs.b, rhs.b },
+			{ lhs.c, rhs.c },
+			{ lhs.d, rhs.d },
+			{ rhs.a, rhs.b },
+			{ rhs.b, rhs.c },
+			{ rhs.c, rhs.d },
+			{ rhs.d, rhs.a },
+		};
+
+		for (double z = min_z; z <= max_z; z+=1) {
+			Coord2d[] found = {};
+			for (int i=0; i<pairings.length[0]; i+=1) {
+				var a = pairings[i,0];
+				var b = pairings[i,1];
+				Coord2d? point = between_3d(z, a, b);
+				if (point != null) {
+					if (found.length < 4) {
+						found += point;
+					}
+					if (found.length == 4) {
+						break;
+					}
+				}
+			}
+			if (found.length == 4) {
+				var quad = new Quad<Coord2d>(found[0], found[1], found[2], found[3]);
+				quad_raster(model, quad, (int) z);
+			}
+		}
+	}
 }

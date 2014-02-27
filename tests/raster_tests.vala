@@ -57,19 +57,52 @@ namespace LibVoxel.Tests {
 		var d = new Coord2d(-10, -8);
 		var quad = new Quad<Coord2d>(a,b,c,d);
 
-		stdout.printf("--> Testing line draw function.\n");
+		stdout.printf("--> Testing quad rasterization function.\n");
 		quad_raster(model, quad, 0);
 		plot(model, 0);
 
 		var export = export_base + "quad_raster/"; 
 		stdout.printf(@"--> Quad rasterization test exported to $export\n");
-		//export_to_pngs(model, export);
+		export_to_pngs(model, export);
+	}
+
+
+	private void frustum_test(string data_path, string export_base) {
+		var model = new VoxelModel();
+
+		double min_z = 0;
+		double max_z = 3;
+		
+		stdout.printf("--> Testing frustum rasterization function.\n");
+
+		var front = new Quad<Coord3d>(
+			new Coord3d(-8,  8, min_z),
+			new Coord3d( 8,  8, min_z),
+			new Coord3d( 8, -8, min_z),
+			new Coord3d(-8, -8, min_z));
+
+		var back = new Quad<Coord3d>(
+			new Coord3d(-2,  2, max_z),
+			new Coord3d( 2,  2, max_z),
+			new Coord3d( 2, -2, max_z),
+			new Coord3d(-2, -2, max_z));
+		   
+		frustum_raster(model, front, back);
+		for (double z=min_z; z<=max_z; z+=1) {
+			plot(model, (int)z);
+		}
+
+		var export = export_base + "frust_raster/"; 
+		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
+		export_to_pngs(model, export);
+
 	}
 
 
 	public void raster_tests(string data_path, string export_base) {
 		line_test(data_path, export_base);
 		quad_test(data_path, export_base);
+		frustum_test(data_path, export_base);
 	}
 
 }

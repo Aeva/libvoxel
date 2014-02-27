@@ -84,7 +84,6 @@ namespace LibVoxel.Tests {
 	}
 
 
-
 	private void frustum_test(string data_path, string export_base) {
 		var model = new VoxelModel();
 
@@ -113,8 +112,70 @@ namespace LibVoxel.Tests {
 		var export = export_base + "frust_raster/"; 
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
 		export_to_pngs(model, export);
-
 	}
+
+
+	private void frustum_test2(string data_path, string export_base) {
+		var model = new VoxelModel();
+
+		double min_z = 0;
+		double max_z = 3;
+		
+		stdout.printf("--> Testing frustum rasterization function.\n");
+
+		var front = new Quad<Coord3d>(
+			new Coord3d(-8,  8, max_z),
+			new Coord3d( 8,  8, max_z),
+			new Coord3d( 8, -8, max_z),
+			new Coord3d(-8, -8, max_z));
+
+		var back = new Quad<Coord3d>(
+			new Coord3d(-2,  2, min_z),
+			new Coord3d( 2,  2, min_z),
+			new Coord3d( 2, -2, min_z),
+			new Coord3d(-2, -2, min_z));
+		   
+		frustum_raster(model, front, back);
+		for (double z=min_z; z<=max_z; z+=1) {
+			plot(model, (int)z);
+		}
+
+		var export = export_base + "frust_raster2/"; 
+		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
+		export_to_pngs(model, export);
+	}
+
+
+	private void frustum_test3(string data_path, string export_base) {
+		var model = new VoxelModel();
+
+		double min_z = 0;
+		double max_z = 10;
+		
+		stdout.printf("--> Testing frustum rasterization function.\n");
+
+		var front = new Quad<Coord3d>(
+			new Coord3d(-8,  8, max_z),
+			new Coord3d( 8,  8, max_z-1),
+			new Coord3d( 8, -8, max_z-2),
+			new Coord3d(-8, -8, max_z-3));
+
+		var back = new Quad<Coord3d>(
+			new Coord3d(-2,  2, min_z+3),
+			new Coord3d( 2,  2, min_z+2),
+			new Coord3d( 2, -2, min_z+1),
+			new Coord3d(-2, -2, min_z));
+		   
+		frustum_raster(model, front, back);
+		for (double z=min_z; z<=max_z; z+=1) {
+			plot(model, (int)z);
+		}
+
+		var export = export_base + "frust_raster3/";
+		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
+		export_to_pngs(model, export);
+	}
+
 
 
 	public void raster_tests(string data_path, string export_base) {
@@ -122,6 +183,8 @@ namespace LibVoxel.Tests {
 		quad_test(data_path, export_base);
 		quad_test2(data_path, export_base);
 		frustum_test(data_path, export_base);
+		frustum_test2(data_path, export_base);
+		frustum_test3(data_path, export_base);
 	}
 
 }

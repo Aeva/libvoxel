@@ -45,6 +45,7 @@ namespace LibVoxel.Math {
 			/*
 			  FIXME: this could be sped up quite a bit with threading.
 			 */
+
 			for (int z=model.min_z; z<=model.max_z; z+=1) {
 				for (int y=model.min_y; y<=model.max_y; y+=1) {
 					for (int x=model.min_x; x<=model.max_x; x+=1) {

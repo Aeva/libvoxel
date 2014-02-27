@@ -118,23 +118,23 @@ namespace LibVoxel {
 				this.__tree[vec] = datum;
 				this.count += 1;
 
-				if (x < min_x) {
+				if (x < this.min_x) {
 					this.min_x = x;
 				}
-				if (x > max_x) {
+				if (x > this.max_x) {
 					this.max_x = x;
 				}
-				if (y < min_y) {
+				if (y < this.min_y) {
 					this.min_y = y;
 				}
-				if (y > max_y) {
+				if (y > this.max_y) {
 					this.max_y = y;
 				}
-				if (z < min_z) {
-					this.min_z = x;
+				if (z < this.min_z) {
+					this.min_z = z;
 				}
-				if (z > max_z) {
-					this.max_z = x;
+				if (z > this.max_z) {
+					this.max_z = z;
 				}
 			}
 			datum.samples += 1;

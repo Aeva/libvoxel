@@ -30,11 +30,7 @@ namespace LibVoxel.Tests {
 
 		stdout.printf(@" - importing test data from $data_path.\n");
 		var model = import_from_pngs(import_path);
-		stdout.printf(" - populating a VectorDump with test data.\n");
-		var vectors = new VertexDump(model);
-		int count = vectors.triangles.length;
-		stdout.printf(@" - generated $count triangle(s).\n");
 		stdout.printf(@" - theoretically exporting to $export_path.\n");
-		export_stl(vectors, export_path);
+		export_stl(model, export_path);
 	}
 }

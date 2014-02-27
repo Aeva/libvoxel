@@ -109,9 +109,9 @@ namespace LibVoxel.Tests {
 			plot(model, (int)z);
 		}
 
-		var export = export_base + "frust_raster/"; 
+		var export = export_base + "frust_raster.stl"; 
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
-		export_to_pngs(model, export);
+		export_stl(model, export);
 	}
 
 
@@ -140,9 +140,9 @@ namespace LibVoxel.Tests {
 			plot(model, (int)z);
 		}
 
-		var export = export_base + "frust_raster2/"; 
+		var export = export_base + "frust_raster2.stl";
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
-		export_to_pngs(model, export);
+		export_stl(model, export);
 	}
 
 
@@ -171,9 +171,9 @@ namespace LibVoxel.Tests {
 			plot(model, (int)z);
 		}
 
-		var export = export_base + "frust_raster3/";
+		var export = export_base + "frust_raster3.stl";
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
-		export_to_pngs(model, export);
+		export_stl(model, export);
 	}
 
 

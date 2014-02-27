@@ -22,7 +22,8 @@ using LibVoxel.Math;
 namespace LibVoxel {
 
 
-	public void export_stl(VertexDump vertex_data, string export_path) {
+	public void export_stl(VoxelModel model, string export_path) {
+		var vertex_data = new VertexDump(model);
 
 		var file = File.new_for_path(export_path);
 		if (file.query_exists()) {

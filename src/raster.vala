@@ -132,14 +132,10 @@ namespace LibVoxel.Raster {
 		}
 
 		Coord3d[,] pairings = {
-// FIXME: pairings are commented out to exclude redundancy in the edge
-// case where in several are on the same z plane.  Instead, we should
-// probably check for redundancy instead.  EG, unsure if the commented
-// out pairings are actually needed or not.
 			{ lhs.a, lhs.b },
-//			{ lhs.b, lhs.c },
+			{ lhs.b, lhs.c },
 			{ lhs.c, lhs.d },
-//			{ lhs.d, lhs.a },
+			{ lhs.d, lhs.a },
 
 			{ lhs.a, rhs.a },
 			{ lhs.b, rhs.b },
@@ -147,14 +143,14 @@ namespace LibVoxel.Raster {
 			{ lhs.d, rhs.d },
 
 			{ rhs.a, rhs.b },
-//			{ rhs.b, rhs.c },
+			{ rhs.b, rhs.c },
 			{ rhs.c, rhs.d },
-//			{ rhs.d, rhs.a },
+			{ rhs.d, rhs.a },
 		};
 
 		Coord2d[] found = {};
 		for (double z = min_z; z <= max_z; z+=1) {
-			for (int i=0; i<pairings.length[0] && found.length<4; i+=1) {
+			for (int i=0; i<pairings.length[0]; i+=1) {
 				var a = pairings[i,0];
 				var b = pairings[i,1];
 				try {
@@ -173,7 +169,35 @@ namespace LibVoxel.Raster {
 					}
 				}
 			}
-			if (found.length == 4) {
+			if (found.length > 4) {
+				// trim out the non-unique coordinates
+				Coord2d[] unique = {};
+				foreach (Coord2d pt in found) {
+					bool duplicate = false;
+					foreach (Coord2d check in unique) {
+						if (check.x == pt.x && check.y == pt.y) {
+							duplicate = true;
+							break;
+						}
+					}
+					if (!duplicate) {
+						unique += pt;
+					}
+				}
+				found = unique;
+			}			
+			if (found.length == 1) {
+				draw_line(model, found[0], found[0], (int) z);
+			}
+			else if (found.length == 2) {
+				draw_line(model, found[0], found[1], (int) z);
+			}
+			else if (found.length == 3) {
+				// convert triangle to quad.
+				var quad = new Quad<Coord2d>(found[0], found[1], found[2], found[2]);
+				quad_raster(model, quad, (int) z);
+			}
+			else if (found.length == 4) {
 				var quad = new Quad<Coord2d>(found[0], found[1], found[2], found[3]);
 				quad_raster(model, quad, (int) z);
 			}

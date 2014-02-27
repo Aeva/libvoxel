@@ -19,6 +19,13 @@
 namespace LibVoxel.Math {
 
 
+	public errordomain MathException {
+		OUT_OF_BOUNDS,
+		DIVIDE_BY_ZERO,
+	}
+
+
+
 	public class Coord3d : Object {
 		/*
 		  X, Y, and Z are expressed as doubles.
@@ -31,6 +38,10 @@ namespace LibVoxel.Math {
 			this.x = x;
 			this.y = y;
 			this.z = z;
+		}
+
+		public string to_string() {
+			return @"($x, $y, $z)";
 		}
 	}
 
@@ -45,6 +56,10 @@ namespace LibVoxel.Math {
 		public Coord2d(double x, double y) {
 			this.x = x;
 			this.y = y;
+		}
+
+		public string to_string() {
+			return @"($x, $y)";
 		}
 	}
 
@@ -96,14 +111,14 @@ namespace LibVoxel.Math {
 	}
 
 
-	public double? between_2d(double y, Coord2d a, Coord2d b) {
+	public double between_2d(double y, Coord2d a, Coord2d b) throws MathException {
 		/* 
 		  Determines if value 'y' is within a line segment defined by
-		  points 'a' and 'b'.  Returns null if it falls outside of the
-		  endpoints, otherwise returns the value of 'x' if it does
-		  fall within the line segment.
+		  points 'a' and 'b'.  Returns the value of 'x' if y falls
+		  within the line segment.  Throws MathException.OUT_OF_BOUNDS
+		  or MathException.DIVIDE_BY_ZERO for the two special cases
+		  that might arrise with this function.
 		*/
-		double? result = null;
 		Coord2d low;
 		Coord2d high;
 		if (a.y < b.y) {
@@ -116,38 +131,45 @@ namespace LibVoxel.Math {
 		}
 
 		if (y >= low.y && y <= high.y ) {
-			var foo = (y-low.y);
-			var bar = (high.y-low.y);
-			if (bar != 0) {
-				var i = foo / bar;
-				result = mix_2d(low, high, i).x;
+			if (high.y == low.y) {
+				throw new MathException.DIVIDE_BY_ZERO(
+					"Both coordinates have the same Y value.");
 			}
-			else {
-				result = low.x;
-			}
+			var i = (y-low.y) / (high.y-low.y);
+			return mix_2d(low, high, i).x;
 		}
-		return result;
+		else {
+			throw new MathException.OUT_OF_BOUNDS(
+				"Given value of Y is outside of the line segment.");
+		}
 	}
 
 
-	public Coord2d? between_3d(double z, Coord3d a, Coord3d b) {
+	public Coord2d between_3d(double z, Coord3d a, Coord3d b) throws MathException {
 		/*
 		  Determines if value 'z' is within a line segment defined by
-		  points 'a' and 'b'.  Returns null if it falls outside of the
-		  endpoints, otherwise returns a 2D coordinate that
-		  cooresponds for the value of 'z' in that line segment.
+		  points 'a' and 'b'.  Returns a 2D coordinate for the given
+		  value of z.  Throws MathException.OUT_OF_BOUNDS
+		  or MathException.DIVIDE_BY_ZERO for the two special cases
+		  that might arrise with this function.
 		*/
-		Coord2d? result = null;
 		var low = a.z < b.z ? a : b;
 		var high = a.z < b.z ? b : a;
 
 		if (z >= low.z && z <= high.z ) {
+			if (high.z == low.z) {
+				throw new MathException.DIVIDE_BY_ZERO(
+					"Both coordinates have the same Z value.");
+			}
 			var i = (z-low.z) / (high.z-low.z);
 			var between = mix_3d(low, high, i);
 			var x = between.x;
 			var y = between.y;
-			result = new Coord2d(x, y);
+			return new Coord2d(x, y);
 		}
-		return result;
+		else {
+			throw new MathException.OUT_OF_BOUNDS(
+				"Given value of Z is outside of the line segment.");
+		}
 	}
 }

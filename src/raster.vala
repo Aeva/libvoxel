@@ -78,8 +78,8 @@ namespace LibVoxel.Raster {
 			for (int i=0; i<pairings.length[0]; i+=1) {
 				Coord2d a = pairings[i,0];
 				Coord2d b = pairings[i,1];
-				var x = between_2d(y, a, b); // x intersection
-				if (x != null) {
+				try {
+					var x = between_2d(y, a, b); // x intersection
 					if (first == null) {
 						first = new Coord2d(floor(x), y);
 					}
@@ -87,9 +87,19 @@ namespace LibVoxel.Raster {
 						second = new Coord2d(floor(x), y);
 						break;
 					}
+				} catch (MathException Err) {
+					if (Err is MathException.DIVIDE_BY_ZERO) {
+						// take both endpoints instead of generating new ones.
+						first = a;
+						second = b;
+						break;
+					}
+					else {
+						// these are not the coords you're looking for.
+						continue;
+					}
 				}
 			}
-			
 			if (first != null && second != null) {
 				draw_line(model, first, second, z);
 			}
@@ -126,35 +136,48 @@ namespace LibVoxel.Raster {
 			{ lhs.b, lhs.c },
 			{ lhs.c, lhs.d },
 			{ lhs.d, lhs.a },
+
 			{ lhs.a, rhs.a },
 			{ lhs.b, rhs.b },
 			{ lhs.c, rhs.c },
 			{ lhs.d, rhs.d },
+
 			{ rhs.a, rhs.b },
 			{ rhs.b, rhs.c },
 			{ rhs.c, rhs.d },
 			{ rhs.d, rhs.a },
 		};
 
+		Coord2d[] found = {};
 		for (double z = min_z; z <= max_z; z+=1) {
-			Coord2d[] found = {};
-			for (int i=0; i<pairings.length[0]; i+=1) {
+			stdout.printf(@"edhunaoehunaetuh $z\n");
+			for (int i=0; i<pairings.length[0] && found.length<4; i+=1) {
 				var a = pairings[i,0];
 				var b = pairings[i,1];
-				Coord2d? point = between_3d(z, a, b);
-				if (point != null) {
-					if (found.length < 4) {
-						found += point;
+				try {
+					Coord2d point = between_3d(z, a, b);
+					found += point;
+					continue;
+				} catch (MathException Err) {
+					if (Err is MathException.DIVIDE_BY_ZERO) {
+						// take both endpoints instead of generating new ones.
+						found += new Coord2d(a.x, a.y);
+						found += new Coord2d(b.x, b.y);						
 					}
-					if (found.length == 4) {
-						break;
+					else {
+						// these are not the coords you're looking for.
+						continue;						
 					}
 				}
 			}
 			if (found.length == 4) {
+				stdout.printf("MATCHED: " + found[0].to_string() + found[1].to_string() + 
+							  found[2].to_string() + found[3].to_string() + "\n");
+				
 				var quad = new Quad<Coord2d>(found[0], found[1], found[2], found[3]);
 				quad_raster(model, quad, (int) z);
 			}
+			found = {};
 		}
 	}
 }

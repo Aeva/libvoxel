@@ -62,5 +62,7 @@ namespace LibVoxel.Tests {
 		test_png_import_export(data_path, base_path);
 		
 		raster_tests(data_path, base_path);
+
+		test_stl_export_tests(data_path, base_path);
 	}
 }

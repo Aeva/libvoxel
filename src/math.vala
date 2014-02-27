@@ -64,6 +64,19 @@ namespace LibVoxel.Math {
 	}
 
 
+	public class Triangle<coord> : Object {
+		public coord a;
+		public coord b;
+		public coord c;
+		
+		public Triangle(coord a, coord b, coord c) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+		}
+	}
+
+
 	public class Quad<coord> : Object {
 		public coord a;
 		public coord b;

@@ -34,16 +34,13 @@ namespace LibVoxel.Tests {
 		draw_line(model, start, end, 0);
 
 		stdout.printf("--> Testing line draw function.\n");
-		string line;
 		for (int y=(int)low; y<high; y+=1) {
-			line = ">> ";
 			for (int x=(int)low; x<high; x+=1) {
 				int expected = x==y ? 1 : 0;
 				assert(model.read(x, y, 0) == expected);
-				line += x==y ? " #" : " _";
 			}
-			stdout.printf(line+"\n");
 		}
+		plot(model, 0);
 		
 		var export = export_base + "line_raster/"; 
 		stdout.printf(@"--> Line rasterization test exported to $export\n");
@@ -66,7 +63,7 @@ namespace LibVoxel.Tests {
 
 		var export = export_base + "quad_raster/"; 
 		stdout.printf(@"--> Quad rasterization test exported to $export\n");
-		export_to_pngs(model, export);
+		//export_to_pngs(model, export);
 	}
 
 

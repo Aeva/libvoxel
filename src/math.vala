@@ -104,8 +104,16 @@ namespace LibVoxel.Math {
 		  fall within the line segment.
 		*/
 		double? result = null;
-		var low = a.y < b.y ? a : b;
-		var high = a.y < b.y ? b : a;
+		Coord2d low;
+		Coord2d high;
+		if (a.y < b.y) {
+			low = a;
+			high = b;
+		}
+		else {
+			high = a;
+			low = b;
+		}
 
 		if (y >= low.y && y <= high.y ) {
 			var i = (y-low.y) / (high.y-low.y);
@@ -129,7 +137,7 @@ namespace LibVoxel.Math {
 
 		if (z >= low.z && z <= high.z ) {
 			var i = (z-low.z) / (high.z-low.z);
-			var between = mix_3d(a, b, i);
+			var between = mix_3d(low, high, i);
 			var x = between.x;
 			var y = between.y;
 			result = new Coord2d(x, y);

@@ -69,10 +69,24 @@ namespace LibVoxel {
 
 
 	public void plot(VoxelModel model, int z) {
+		/*
+		  Draw out a cross section of the voxel model to the console.
+		 */
 		string line;
-		for (int y=model.min_y-2; y<=model.max_y+2; y+=1) {
+		
+		if (model.count == 0) {
+			stdout.printf("  Plot failed: model contains no data.\n");
+			return;
+		}
+
+		int min_x = -10 < model.min_x ? -10 : model.min_x;
+		int max_x = 10 > model.max_x ? 10 : model.max_x;
+		int min_y = -10 < model.min_y ? -10 : model.min_y;
+		int max_y = 10 > model.max_y ? 10 : model.max_y;
+
+		for (int y=max_y+2; y>=min_y-2; y-=1) {
 			line = "   ";
-			for (int x=model.min_x-2; x<=model.max_x+2; x+=1) {
+			for (int x=min_x-2; x<=max_x+2; x+=1) {
 				var val = model.read(x, y, 0);
 				if (x==0 || y==0) {
 					line += val>0 ? " @" : " +";;
@@ -81,7 +95,11 @@ namespace LibVoxel {
 					line += val>0 ? " #" : " -";
 				}
 			}
+			if (y%5 == 0) {
+				line += @"  $y";
+			}
 			stdout.printf(line+"\n");
 		}
+		stdout.printf("\n\n");
 	}
 }

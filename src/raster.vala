@@ -67,8 +67,6 @@ namespace LibVoxel.Raster {
 			}
 		}
 
-		stdout.printf(@" min value: $y_min, max value: $y_max\n");
-
 		for (double y=y_min; y<= y_max; y+=1) {
 			Coord2d? first = null;
 			Coord2d? second = null;
@@ -89,12 +87,6 @@ namespace LibVoxel.Raster {
 			}
 			
 			if (first != null && second != null) {
-				var x1 = first.x;
-				var y1 = first.y;
-				var x2 = second.x;
-				var y2 = second.y;
-			   
-				stdout.printf(@"($x1, $y1), ($x2, $y2)\n");
 				draw_line(model, first, second, z);
 			}
 		}

@@ -49,7 +49,6 @@ namespace LibVoxel.Raster {
 		/*
 		  Fill in a quad on a given 2D x/y plane within a voxel model.
 		*/
-		
 		Coord2d[] points = {quad.a, quad.b, quad.c, quad.d};
 		Coord2d[,] pairings = {
 			{ quad.a, quad.b },
@@ -118,24 +117,29 @@ namespace LibVoxel.Raster {
 		double max_z = lhs.a.z;
 		
 		Coord3d[] point_set = {
-			lhs.b, lhs.c, lhs.d,
+			lhs.a, lhs.b, lhs.c, lhs.d,
 			rhs.a, rhs.b, rhs.c, rhs.d,
 		};
-
-		foreach (var point in point_set) {
+		for (int i=1; i<point_set.length; i +=1) {
+			// yes, starting at i=1 is intentional
+			var point = point_set[i];
 			if (point.z < min_z) {
 				min_z = point.z;
 			}
 			if (point.z > min_z) {
 				max_z = point.z;
-			}
-		};
+			}			
+		}
 
 		Coord3d[,] pairings = {
+// FIXME: pairings are commented out to exclude redundancy in the edge
+// case where in several are on the same z plane.  Instead, we should
+// probably check for redundancy instead.  EG, unsure if the commented
+// out pairings are actually needed or not.
 			{ lhs.a, lhs.b },
-			{ lhs.b, lhs.c },
+//			{ lhs.b, lhs.c },
 			{ lhs.c, lhs.d },
-			{ lhs.d, lhs.a },
+//			{ lhs.d, lhs.a },
 
 			{ lhs.a, rhs.a },
 			{ lhs.b, rhs.b },
@@ -143,14 +147,13 @@ namespace LibVoxel.Raster {
 			{ lhs.d, rhs.d },
 
 			{ rhs.a, rhs.b },
-			{ rhs.b, rhs.c },
+//			{ rhs.b, rhs.c },
 			{ rhs.c, rhs.d },
-			{ rhs.d, rhs.a },
+//			{ rhs.d, rhs.a },
 		};
 
 		Coord2d[] found = {};
 		for (double z = min_z; z <= max_z; z+=1) {
-			stdout.printf(@"edhunaoehunaetuh $z\n");
 			for (int i=0; i<pairings.length[0] && found.length<4; i+=1) {
 				var a = pairings[i,0];
 				var b = pairings[i,1];
@@ -171,9 +174,6 @@ namespace LibVoxel.Raster {
 				}
 			}
 			if (found.length == 4) {
-				stdout.printf("MATCHED: " + found[0].to_string() + found[1].to_string() + 
-							  found[2].to_string() + found[3].to_string() + "\n");
-				
 				var quad = new Quad<Coord2d>(found[0], found[1], found[2], found[3]);
 				quad_raster(model, quad, (int) z);
 			}

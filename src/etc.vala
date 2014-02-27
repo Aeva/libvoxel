@@ -88,7 +88,7 @@ namespace LibVoxel {
 		for (int y=max_y+2; y>=min_y-2; y-=1) {
 			line = "   ";
 			for (int x=min_x-2; x<=max_x+2; x+=1) {
-				var val = model.read(x, y, 0);
+				var val = model.read(x, y, z);
 				if (x==0 || y==0) {
 					line += val>0 ? " @" : " +";;
 				}

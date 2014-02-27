@@ -84,6 +84,7 @@ namespace LibVoxel {
 		int min_y = -10 < model.min_y ? -10 : model.min_y;
 		int max_y = 10 > model.max_y ? 10 : model.max_y;
 
+		stdout.printf("\n");
 		for (int y=max_y+2; y>=min_y-2; y-=1) {
 			line = "   ";
 			for (int x=min_x-2; x<=max_x+2; x+=1) {
@@ -100,6 +101,6 @@ namespace LibVoxel {
 			}
 			stdout.printf(line+"\n");
 		}
-		stdout.printf("\n\n");
+		stdout.printf("\n");
 	}
 }

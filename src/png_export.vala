@@ -47,24 +47,22 @@ namespace LibVoxel {
 
 		int x = model.min_x;
 		int y = model.min_y;
-		int w = model.width;
-		int h = model.height;
 		int channels = 3;
 		uint8[] img_data = {};
 		
-		while (x < w && y < h) {
+		while (x <= model.max_x && y <= model.max_y) {
 			bool has_data = model.read(x, y, z) > 0;
 			for (int s=0; s<channels; s+=1){ 
 				img_data += has_data ? 255 : 0;
 			}
 			x += 1;
-			if (x >= w) {
+			if (x > model.max_x) {
 				x = model.min_x;
 				y += 1;
 			}
 		}
 		
-		var buffer = make_buffer(img_data, w, h);
+		var buffer = make_buffer(img_data, model.width, model.height);
 
 		int line = model.max_z + z;
 		int digits = model.depth.to_string().length;

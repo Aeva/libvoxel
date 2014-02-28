@@ -22,6 +22,7 @@ namespace LibVoxel.Tests {
 		
 		string import_path = data_path + "fill_test/";
 		string cast_export = base_path + "cast_test.stl";
+		string cast_png_export = base_path + "cast_test/";
 		string ref_export = base_path + "precast_reference.stl";
 
 		var model = import_from_pngs(import_path);
@@ -38,5 +39,7 @@ namespace LibVoxel.Tests {
 		export_stl(model, ref_export);
 		stdout.printf(@"saved cast to $cast_export\n");
 		export_stl(result, cast_export);
+		stdout.printf(@"saved cast to $cast_png_export\n");
+		export_to_pngs(result, cast_png_export);
 	}
 }

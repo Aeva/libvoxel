@@ -64,5 +64,7 @@ namespace LibVoxel.Tests {
 		raster_tests(data_path, base_path);
 
 		test_stl_export_tests(data_path, base_path);
+
+		colorfill_tests(data_path, base_path);
 	}
 }

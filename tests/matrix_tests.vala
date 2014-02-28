@@ -46,6 +46,10 @@ namespace LibVoxel.Tests {
 		result = clamp(matrix.multiply(coord));
 		stdout.printf(coord.to_string() + @" * zrotate($theta) = " + result.to_string() + "\n");
 
+		coord = new Coord3d(1, 0, 0);
+		matrix = new Mat4.offset(10, 10, 10);
+		result = clamp(matrix.multiply(coord));
+		stdout.printf(coord.to_string() + @" * offset(10, 10, 10) = " + result.to_string() + "\n");
 
 	}
 

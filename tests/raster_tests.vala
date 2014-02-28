@@ -177,6 +177,25 @@ namespace LibVoxel.Tests {
 	}
 
 
+	private void frustum_test4(string data_path, string export_base) {
+		var model = new VoxelModel();
+
+		var front = new Quad<Coord3d>(
+			new Coord3d(-5, -10,  5),
+			new Coord3d( 5, -10,  5),
+			new Coord3d( 5, -10, -5),
+			new Coord3d(-5, -10, -5));
+
+		var back = new Quad<Coord3d>(
+			new Coord3d(-10, 10,  10),
+			new Coord3d( 10, 10,  10),
+			new Coord3d( 10, 10, -5),
+			new Coord3d(-10, 10, -5));
+
+		frustum_raster(model, front, back);
+		export_stl(model, export_base + "frust_raster4.stl");
+	}
+
 
 	public void raster_tests(string data_path, string export_base) {
 		line_test(data_path, export_base);
@@ -185,6 +204,7 @@ namespace LibVoxel.Tests {
 		frustum_test(data_path, export_base);
 		frustum_test2(data_path, export_base);
 		frustum_test3(data_path, export_base);
+		frustum_test4(data_path, export_base);
 	}
 
 }

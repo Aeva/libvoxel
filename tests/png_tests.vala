@@ -26,6 +26,10 @@ namespace LibVoxel {
 		stdout.printf(@"--> Attempting to import model from: $import_path\n");
 		var model = import_from_pngs(import_path);
 
+		for (int z = model.min_z; z <= model.max_z; z+=1) {
+			plot(model, z);
+		}
+
 		stdout.printf(@"--> Attempting to save imported model to: $export_path\n");
 		export_to_pngs(model, export_path);
 	}

@@ -29,7 +29,7 @@ namespace LibVoxel.Tests {
 		stdout.printf("Color fill test! woo!\n");
 		var result = cast(model);
 
-		for(int z=result.min_z; z<result.max_z; z+=1) {
+		for(int z=result.min_z; z<=result.max_z; z+=1) {
 			stdout.printf(@"Plot for z=$z in result model.\n");
 			plot(result, z);
 		}

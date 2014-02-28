@@ -20,15 +20,20 @@ namespace LibVoxel.Tests {
 
 	public void colorfill_tests(string data_path, string base_path) {
 		
-		string import_path = data_path + "tiny_cube/";
-		string export_path = base_path + "cast.stl";
+		string import_path = data_path + "fill_test/";
+		string export_path = base_path + "cast_test.stl";
 
 		var model = import_from_pngs(import_path);
 
 		stdout.printf("Color fill test! woo!\n");
 		var result = cast(model);
-		stdout.printf(@"saved to $base_path...?\n");
 
+		for(int z=result.min_z; z<result.max_z; z+=1) {
+			stdout.printf(@"Plot for z=$z in result model.\n");
+			plot(result, z);
+		}
+
+		stdout.printf(@"saved to $export_path...?\n");
 		export_stl(result, export_path);
 	}
 }

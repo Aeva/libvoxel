@@ -20,26 +20,21 @@ namespace LibVoxel {
 
 
 	private void fill_recursion(VoxelModel src, VoxelModel dest, 
-								int x, int y, int z) {
-		if (x >= src.min_x-1 && 
-			y >= src.min_y-1 &&
-			z >= src.min_z-1 &&
-			x <= src.min_x+1 && 
-			y <= src.min_y+1 && 
-			z <= src.min_z+1 &&
-			src.read(x,y,z) == 0 &&
-			dest.read(x,y,z) == 0)
+								int x, int y, int z,
+								int min_x, int min_y, int min_z,
+								int max_x, int max_y, int max_z) {
+		if (x >= min_x && x <= max_x && 
+			y >= min_y && y <= max_y && 
+			z >= min_z && z <= max_z &&
+			src.read(x,y,z) == 0 && dest.read(x,y,z) == 0)
 		{
 			dest.add(x,y,z);
-			for (var z_mod = -1; z_mod <= 1; z_mod +=1) {
-				for (var y_mod = -1; y_mod <= 1; y_mod +=1) {
-					for (var x_mod = -1; x_mod <= 1; x_mod +=1) {
-						if (!(x_mod == 0 && y_mod == 0 && z_mod == 0)) {
-							fill_recursion(src, dest, x+x_mod, y+y_mod, z+z_mod);
-						}
-					}
-				}
-			}
+			fill_recursion(src, dest, x, y, z-1, min_x, min_y, min_z, max_x, max_y, max_z);
+			fill_recursion(src, dest, x, y, z+1, min_x, min_y, min_z, max_x, max_y, max_z);
+			fill_recursion(src, dest, x-1, y, z, min_x, min_y, min_z, max_x, max_y, max_z);
+			fill_recursion(src, dest, x+1, y, z, min_x, min_y, min_z, max_x, max_y, max_z);
+			fill_recursion(src, dest, x, y-1, z, min_x, min_y, min_z, max_x, max_y, max_z);
+			fill_recursion(src, dest, x, y+1, z, min_x, min_y, min_z, max_x, max_y, max_z);
 		}
 	}
 
@@ -55,8 +50,15 @@ namespace LibVoxel {
 		  It always starts in one of the corners.
 		 */
 		var result = new VoxelModel();
+		var min_x = src_model.min_x - 1;
+		var min_y = src_model.min_y - 1;
+		var min_z = src_model.min_z - 1;
+		var max_x = src_model.max_x + 1;
+		var max_y = src_model.max_y + 1;
+		var max_z = src_model.max_z + 1;
 		fill_recursion(src_model, result,
-					   src_model.min_x-1, src_model.min_y-1, src_model.min_z-1);
+					   min_x, min_y, min_z, 
+					   min_x, min_y, min_z, max_x, max_y, max_z);
 		return result;
 	}
 

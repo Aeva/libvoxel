@@ -21,7 +21,8 @@ namespace LibVoxel.Tests {
 	public void colorfill_tests(string data_path, string base_path) {
 		
 		string import_path = data_path + "fill_test/";
-		string export_path = base_path + "cast_test.stl";
+		string cast_export = base_path + "cast_test.stl";
+		string ref_export = base_path + "precast_reference.stl";
 
 		var model = import_from_pngs(import_path);
 
@@ -33,7 +34,9 @@ namespace LibVoxel.Tests {
 			plot(result, z);
 		}
 
-		stdout.printf(@"saved to $export_path...?\n");
-		export_stl(result, export_path);
+		stdout.printf(@"saved reference to $ref_export\n");
+		export_stl(model, ref_export);
+		stdout.printf(@"saved cast to $cast_export\n");
+		export_stl(result, cast_export);
 	}
 }

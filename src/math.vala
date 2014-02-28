@@ -16,6 +16,8 @@
  */
 
 
+using Math;
+
 namespace LibVoxel.Math {
 
 
@@ -89,6 +91,98 @@ namespace LibVoxel.Math {
 			this.c = c;
 			this.d = d;
 		}
+	}
+
+
+	public class Mat4: Object {
+		public double[,] data = {
+			{1, 0, 0, 0}, 
+			{0, 1, 0, 0}, 
+			{0, 0, 1, 0},
+			{0, 0, 0, 1},
+		};
+
+		public Mat4.x_rotate(double degrees) {
+			var theta = radians(degrees);
+			var ct = cos(theta);
+			var st = sin(theta);
+			var nct = -1*ct;
+			var nst = -1*st;
+			this.data = {
+				{1,  0,   0, 0},
+				{0, ct, nst, 0},
+				{0, st, nct, 0},
+				{0,  0,   0, 1},
+			};
+		}
+
+		public Mat4.y_rotate(double degrees) {
+			var theta = radians(degrees);
+			var ct = cos(theta);
+			var st = sin(theta);
+			var nst = -1*st;
+			this.data = {
+				{ ct,  0, st, 0},
+				{  0,  1,  0, 0},
+				{nst,  0, ct, 0},
+				{  0,  0,  0, 1},
+			};
+		}
+
+		public Mat4.z_rotate(double degrees) {
+			var theta = radians(degrees);
+			var ct = cos(theta);
+			var st = sin(theta);
+			var nst = -1*st;
+ 			this.data = {
+				{ct, nst, 0, 0},
+				{st,  ct, 0, 0},
+				{ 0,   0, 1, 0},
+				{ 0,   0, 0, 1},
+			};
+		}
+
+		public Mat4.offset(double x, double y, double z) {
+			this.data = {
+				{1, 0, 0, x},
+				{0, 1, 0, y},
+				{0, 0, 1, z},
+				{0, 0, 0, 1},
+			};
+		}
+		
+		public Coord3d multiply(Coord3d coord) {
+			/*
+			  Apply a matrix to a coordinate.
+			*/
+			double[] vector = {coord.x, coord.y, coord.z, 1};
+			double[] result = {0,0,0,1};
+			for (int y = 0; y<4; y+=1) {
+				double cache = 0;
+				for (int x = 0; x<4; x+=1) {
+					cache += this.data[y,x] * vector[x];
+				}
+				result[y] = cache;
+			}
+			return new Coord3d(result[0], result[1], result[2]);
+		}
+	}
+
+
+	public double radians ( double degrees ) {
+		// Convert from degrees to radians.
+		if (degrees == 0) {
+			return 0;
+		}
+		return PI / (180 / degrees);
+	}
+
+
+	public Coord3d clamp(Coord3d coord) {
+		return new Coord3d(
+			floor(coord.x*10000)/10000,
+			floor(coord.y*10000)/10000,
+			floor(coord.z*10000)/10000);
 	}
 
 

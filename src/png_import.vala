@@ -33,12 +33,16 @@ namespace LibVoxel {
 		var files = get_files(model_dir, "png");
 		var model = new VoxelModel();
 		int z=0;
+		var paths = new List<string>();
 		foreach (var file in files) {
+			string path = file.get_name();
+			paths.append(path);
+		}
+		paths.sort(strcmp);
+		foreach (var file_name in paths) {
+			var path = model_dir + file_name;
 			try {
-				var path = model_dir + file.get_name();
 				var pixbuf = new Pixbuf.from_file(path);
-				stdout.printf(@"--> $path\n");
-
 				var pxdata = pixbuf.get_pixels_with_length();
 				int channels = pixbuf.get_n_channels();
 				int width = pixbuf.get_width();
@@ -47,7 +51,6 @@ namespace LibVoxel {
 				int x = 0;
 				int y = 0;
 				int i = 0;
-				string line = "";
 				while (x < width && y < height) {
 					var sample = 0;
 					for (int s=i; s<i+channels; s+=1) {
@@ -57,20 +60,12 @@ namespace LibVoxel {
 
 					if (sample > 128) {
 						model.add(x, y, z);
-						line += " #";
 					}
-					else {
-						line += " _";
-					}
-
-
 					i += channels;
 					x += 1;
 					if (x >= width) {
 						x = 0;
 						y += 1;
-						stdout.printf(@"    $line\n");
-						line = "";
 					}
 				}
 				z+=1;

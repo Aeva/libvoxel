@@ -83,13 +83,14 @@ namespace LibVoxel.Raster {
 				// z is assumed to be the same for all coordinates
 				double split_x = between_2d(middle.y, 
 											new Coord2d(lower.x, lower.y), 
-											new Coord2d(lower.x, lower.y));
+											new Coord2d(upper.x, upper.y));
 				Coord3d split = new Coord3d(split_x, middle.y, middle.z);
 				solve_tri_for_y(model, middle, split, lower);
 				solve_tri_for_y(model, middle, split, upper);
 			} catch (MathException err) {
-				// this should never happen
-				stderr.printf("Unreachable block called in function solve_tri_for_z...?\n");
+				// this should never happen...?
+				stderr.printf("Unimplemented edge case in solve_tri_for_y:\n");
+				stderr.printf(@"DATA: lower=$lower middle=$middle upper=$upper\n");
 			}
 			return;
 		}
@@ -152,21 +153,18 @@ namespace LibVoxel.Raster {
 			try {
 				Coord2d split_xy = between_3d(middle.z, lower, upper);
 				Coord3d split = new Coord3d(split_xy.x, split_xy.y, middle.z);
-				stdout.printf(@"SPLIT: $middle, $split, $upper, $lower.\n");
 				solve_tri_for_z(model, middle, split, lower);
 				solve_tri_for_z(model, middle, split, upper);
 			} catch (MathException err) {
-				// this should never happen
-				stderr.printf("Unreachable block called in function solve_tri_for_z...?\n");
+				// this should never happen...?
+				stderr.printf("Unimplemented edge case in solve_tri_for_z:\n");
+				stderr.printf(@"DATA: lower=$lower middle=$middle upper=$upper\n");
 			}
 			return;
 		}
 		double min_z = floor(double.min(ends[0].z, common.z));
 		double max_z = floor(double.max(ends[0].z, common.z));
 		for (double z=min_z; z<max_z; z+=1) {
-			var xy1 = ends[0].to_string();
-			var xy2 = ends[1].to_string();
-			stdout.printf(@"Draw line $xy1 -> $xy2 for z=$z ...?\n");
 			try {
 				draw_line(model, 
 						  between_3d(z, ends[0], common), 

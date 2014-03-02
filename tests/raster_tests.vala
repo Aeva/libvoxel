@@ -46,6 +46,36 @@ namespace LibVoxel.Tests {
 		export_to_pngs(model, export);
 	}
 
+	
+	private void tri_test1(string data_path, string export_base) {
+		stdout.printf("--> Testing triangle rasterization function.\n");
+		
+		var model = new VoxelModel();
+		var a = new Coord3d(0, 0, 0);
+		var b = new Coord3d(-5, -4, 9);
+		var c = new Coord3d(6, -7, 11);
+		tri_raster(model, a, b, c);
+		
+		var export = export_base + "triangle1.stl";
+		stdout.printf(@"--> Triangle test exported to $export\n");
+		export_stl(model, export);
+	}
+
+
+	private void tri_test2(string data_path, string export_base) {
+		stdout.printf("--> Testing triangle rasterization function.\n");
+		
+		var model = new VoxelModel();
+		var a = new Coord3d(0, 10, 0);
+		var b = new Coord3d(10, 12, 0);
+		var c = new Coord3d(0, 0, 0);
+		tri_raster(model, a, b, c);
+		
+		var export = export_base + "triangle2.stl";
+		stdout.printf(@"--> Triangle test exported to $export\n");
+		export_stl(model, export);
+	}
+
 
 	private void quad_test(string data_path, string export_base) {
 		var model = new VoxelModel();
@@ -199,6 +229,8 @@ namespace LibVoxel.Tests {
 
 	public void raster_tests(string data_path, string export_base) {
 		line_test(data_path, export_base);
+		tri_test1(data_path, export_base);
+		tri_test2(data_path, export_base);
 		quad_test(data_path, export_base);
 		quad_test2(data_path, export_base);
 		frustum_test(data_path, export_base);

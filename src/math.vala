@@ -186,6 +186,25 @@ namespace LibVoxel.Math {
 	}
 
 
+	public void find_bounds(out double min_val, out double max_val, double[] values) 
+	requires (values.length > 0) {
+		/*
+		  Sets the 'min_val' and 'max_val' to be the minimum value and
+		  maximum value of array 'values'.
+		 */		
+		min_val = values[0];
+		max_val = values[0];
+		for (int i=1; i<values.length; i+=1) {
+			if (values[i] < min_val) {
+				min_val = values[i];
+			}
+			if (values[i] > max_val) {
+				max_val = values[i];
+			}
+		}
+	}
+
+
 	public double mix(double a, double b, double i) {
 		/*
 		  Returns the linear blend between a and b.  'i' is assumed to

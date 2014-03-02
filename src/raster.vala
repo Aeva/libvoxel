@@ -45,6 +45,159 @@ namespace LibVoxel.Raster {
 	}
 
 
+	private void solve_tri_for_y(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
+		Coord3d common;
+		Coord3d[] ends;
+		if (a.y == b.y) {
+			common = c;
+			ends = {a, b};
+		}
+		else if (a.y == c.y) {
+			common = b;
+			ends = {a, c};
+		}
+		else if (b.y == c.y) {
+			common = a;
+			ends = {b, c};
+		}
+		else {
+			// split & re-call
+			Coord3d lower = a;
+			Coord3d upper = a;
+			Coord3d middle = a;
+			Coord3d[] coords = {a, b, c};
+			for (int i=1; i<coords.length; i+=1) {
+				if (coords[i].y < lower.y) {
+					lower = coords[i];
+				}
+				else if (coords[i].y > upper.y) {
+					upper = coords[i];
+				}
+			}
+			for (int i=1; i<coords.length; i+=1) {
+				if (coords[i].y != lower.y && coords[i].y != upper.y) {
+					middle = coords[i];
+				}
+			}
+			try {
+				// z is assumed to be the same for all coordinates
+				double split_x = between_2d(middle.y, 
+											new Coord2d(lower.x, lower.y), 
+											new Coord2d(lower.x, lower.y));
+				Coord3d split = new Coord3d(split_x, middle.y, middle.z);
+				solve_tri_for_y(model, middle, split, lower);
+				solve_tri_for_y(model, middle, split, upper);
+			} catch (MathException err) {
+				// this should never happen
+				stderr.printf("Unreachable block called in function solve_tri_for_z...?\n");
+			}
+			return;
+		}
+		double min_y = floor(double.min(ends[0].y, common.y));
+		double max_y = floor(double.max(ends[0].y, common.y));
+		for (double y=min_y; y<max_y; y+=1) {
+			var com = new Coord2d(common.x, common.y);
+			var xy1 = new Coord2d(ends[0].x, ends[0].y);
+			var xy2 = new Coord2d(ends[1].x, ends[1].y);
+			try {
+				draw_line(model,
+						  new Coord2d(between_2d(y, xy1, com), y),
+						  new Coord2d(between_2d(y, xy2, com), y),
+						  (int) floor(common.z));
+			} catch (MathException err) {
+				if (err is MathException.DIVIDE_BY_ZERO) {
+					// take both endpoints instead of generating new ones.
+					
+					draw_line(model, xy1, xy2, (int) floor(common.z));
+				}
+			}
+		}
+	}
+
+
+	private void solve_tri_for_z(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
+		Coord3d common;
+		Coord3d[] ends;
+		if (a.z == b.z) {
+			common = c;
+			ends = {a, b};
+		}
+		else if (a.z == c.z) {
+			common = b;
+			ends = {a, c};
+		}
+		else if (b.z == c.z) {
+			common = a;
+			ends = {b, c};
+		}
+		else {
+			// split & re-call
+			Coord3d lower = a;
+			Coord3d upper = a;
+			Coord3d middle = a;
+			Coord3d[] coords = {a, b, c};
+			for (int i=1; i<coords.length; i+=1) {
+				if (coords[i].z < lower.z) {
+					lower = coords[i];
+				}
+				else if (coords[i].z > upper.z) {
+					upper = coords[i];
+				}
+			}
+			for (int i=1; i<coords.length; i+=1) {
+				if (coords[i].z != lower.z && coords[i].z != upper.z) {
+					middle = coords[i];
+				}
+			}
+			try {
+				Coord2d split_xy = between_3d(middle.z, lower, upper);
+				Coord3d split = new Coord3d(split_xy.x, split_xy.y, middle.z);
+				stdout.printf(@"SPLIT: $middle, $split, $upper, $lower.\n");
+				solve_tri_for_z(model, middle, split, lower);
+				solve_tri_for_z(model, middle, split, upper);
+			} catch (MathException err) {
+				// this should never happen
+				stderr.printf("Unreachable block called in function solve_tri_for_z...?\n");
+			}
+			return;
+		}
+		double min_z = floor(double.min(ends[0].z, common.z));
+		double max_z = floor(double.max(ends[0].z, common.z));
+		for (double z=min_z; z<max_z; z+=1) {
+			var xy1 = ends[0].to_string();
+			var xy2 = ends[1].to_string();
+			stdout.printf(@"Draw line $xy1 -> $xy2 for z=$z ...?\n");
+			try {
+				draw_line(model, 
+						  between_3d(z, ends[0], common), 
+						  between_3d(z, ends[1], common), 
+						  (int) z);
+			} catch (MathException err) {
+				if (err is MathException.DIVIDE_BY_ZERO) {
+					// take both endpoints instead of generating new ones.
+					draw_line(model,
+							  new Coord2d(ends[0].x, ends[0].y),
+							  new Coord2d(ends[1].x, ends[1].y),
+							  (int) z);
+				}
+			}
+		}
+	}
+
+
+	public void tri_raster(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
+		/*
+		  Render a triangle.
+		 */		
+		if (a.z == b.z && b.z == c.z) {
+			solve_tri_for_y(model, a, b, c);
+		}
+		else {
+			solve_tri_for_z(model, a, b, c);
+		}
+	}
+
+
 	public void quad_raster(VoxelModel model, Quad<Coord2d> quad, int z) {
 		/*
 		  Fill in a quad on a given 2D x/y plane within a voxel model.

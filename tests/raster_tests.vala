@@ -56,6 +56,9 @@ namespace LibVoxel.Tests {
 		var c = new Coord3d(6, -7, 11);
 		tri_raster(model, a, b, c);
 		
+		c = new Coord3d(-7, -10, 0);
+		tri_raster(model, a, b, c);
+		
 		var export = export_base + "triangle1.stl";
 		stdout.printf(@"--> Triangle test exported to $export\n");
 		export_stl(model, export);
@@ -94,6 +97,7 @@ namespace LibVoxel.Tests {
 		stdout.printf(@"--> Quad rasterization test exported to $export\n");
 		export_to_pngs(model, export);
 	}
+
 
 	private void quad_test2(string data_path, string export_base) {
 		var model = new VoxelModel();

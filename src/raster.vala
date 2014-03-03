@@ -45,80 +45,45 @@ namespace LibVoxel.Raster {
 	}
 
 
-	private void solve_tri_for_y(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
-		Coord3d common;
-		Coord3d[] ends;
-		if (a.y == b.y) {
-			common = c;
-			ends = {a, b};
-		}
-		else if (a.y == c.y) {
-			common = b;
-			ends = {a, c};
-		}
-		else if (b.y == c.y) {
-			common = a;
-			ends = {b, c};
-		}
-		else {
-			// split & re-call
-			Coord3d lower = a;
-			Coord3d upper = a;
-			Coord3d middle = a;
-			Coord3d[] coords = {a, b, c};
-			for (int i=1; i<coords.length; i+=1) {
-				if (coords[i].y < lower.y) {
-					lower = coords[i];
-				}
-				else if (coords[i].y > upper.y) {
-					upper = coords[i];
-				}
+	private delegate void AxialMapFunc (int x, int y, int z);
+	// AxialMapFunction is responsible for calling m.add(x,y,z) for some
+	// desired coordinate mapping.
+
+
+	private void render_line(AxialMapFunc add, Coord2d a, Coord2d b, int z) {
+		/*
+		  Draw a line along a given 2D x/y plane within a voxel model.
+		 */
+		var low = a.x < b.x ? a : b;
+		var high = a.x < b.x ? b : a;
+
+		double x1 = floor(low.x);
+	    double x2 = ceil(high.x);
+		
+		for (var x = x1; x<=x2; x+=1) {
+			double y = low.y;
+			if (x2 != x1) {
+				var i = (x-x1) / (x2-x1);
+				y = floor(mix(low.y, high.y, i));
 			}
-			for (int i=1; i<coords.length; i+=1) {
-				if (coords[i].y != lower.y && coords[i].y != upper.y) {
-					middle = coords[i];
-				}
-			}
-			try {
-				// z is assumed to be the same for all coordinates
-				double split_x = between_2d(middle.y, 
-											new Coord2d(lower.x, lower.y), 
-											new Coord2d(upper.x, upper.y));
-				Coord3d split = new Coord3d(split_x, middle.y, middle.z);
-				solve_tri_for_y(model, middle, split, lower);
-				solve_tri_for_y(model, middle, split, upper);
-			} catch (MathException err) {
-				// this should never happen...?
-				stderr.printf("Unimplemented edge case in solve_tri_for_y:\n");
-				stderr.printf(@"DATA: lower=$lower middle=$middle upper=$upper\n");
-			}
-			return;
-		}
-		double min_y = floor(double.min(ends[0].y, common.y));
-		double max_y = floor(double.max(ends[0].y, common.y));
-		for (double y=min_y; y<max_y; y+=1) {
-			var com = new Coord2d(common.x, common.y);
-			var xy1 = new Coord2d(ends[0].x, ends[0].y);
-			var xy2 = new Coord2d(ends[1].x, ends[1].y);
-			try {
-				draw_line(model,
-						  new Coord2d(between_2d(y, xy1, com), y),
-						  new Coord2d(between_2d(y, xy2, com), y),
-						  (int) floor(common.z));
-			} catch (MathException err) {
-				if (err is MathException.DIVIDE_BY_ZERO) {
-					// take both endpoints instead of generating new ones.
-					
-					draw_line(model, xy1, xy2, (int) floor(common.z));
-				}
-			}
+			add((int) x, (int) y, z);
 		}
 	}
 
 
-	private void solve_tri_for_z(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
+	private void rasterize_for_plane(AxialMapFunc add, Coord3d a, Coord3d b, Coord3d c) {
+		/*
+		  Called by 'rasterize'.  This function rasterizes a triangle
+		  defined by points 'a', 'b', and 'c' from the perspective of
+		  the z-plane.  The add delegate is used to add the resulting
+		  voxels into a voxel model.
+
+		  Some trickery is used by the 'rasterize' function to make
+		  this work for the x and y planes as well.
+		 */
 		Coord3d common;
 		Coord3d[] ends;
+		// determine which edge is horizontal
 		if (a.z == b.z) {
 			common = c;
 			ends = {a, b};
@@ -132,7 +97,8 @@ namespace LibVoxel.Raster {
 			ends = {b, c};
 		}
 		else {
-			// split & re-call
+			// no edge is horizontal - split the triangle into two
+			// triangles and recurse.
 			Coord3d lower = a;
 			Coord3d upper = a;
 			Coord3d middle = a;
@@ -153,45 +119,105 @@ namespace LibVoxel.Raster {
 			try {
 				Coord2d split_xy = between_3d(middle.z, lower, upper);
 				Coord3d split = new Coord3d(split_xy.x, split_xy.y, middle.z);
-				solve_tri_for_z(model, middle, split, lower);
-				solve_tri_for_z(model, middle, split, upper);
+				rasterize_for_plane(add, middle, split, lower);
+				rasterize_for_plane(add, middle, split, upper);
 			} catch (MathException err) {
 				// this should never happen...?
-				stderr.printf("Unimplemented edge case in solve_tri_for_z:\n");
+				stderr.printf("Unimplemented edge case in rasterize_for_plane:\n");
 				stderr.printf(@"DATA: lower=$lower middle=$middle upper=$upper\n");
 			}
 			return;
 		}
-		double min_z = floor(double.min(ends[0].z, common.z));
-		double max_z = floor(double.max(ends[0].z, common.z));
+		double min_z = double.min(ends[0].z, common.z);
+		double max_z = double.max(ends[0].z, common.z);
 		for (double z=min_z; z<max_z; z+=1) {
 			try {
-				draw_line(model, 
+				render_line(add, 
 						  between_3d(z, ends[0], common), 
 						  between_3d(z, ends[1], common), 
 						  (int) z);
 			} catch (MathException err) {
 				if (err is MathException.DIVIDE_BY_ZERO) {
 					// take both endpoints instead of generating new ones.
-					draw_line(model,
-							  new Coord2d(ends[0].x, ends[0].y),
-							  new Coord2d(ends[1].x, ends[1].y),
-							  (int) z);
+					render_line(add,
+								new Coord2d(ends[0].x, ends[0].y),
+								new Coord2d(ends[1].x, ends[1].y),
+								(int) z);
 				}
 			}
 		}
 	}
 
 
-	public void tri_raster(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
+	public void rasterize(VoxelModel model, Coord3d _a, Coord3d _b, Coord3d _c) {
 		/*
-		  Render a triangle.
-		 */		
-		if (a.z == b.z && b.z == c.z) {
-			solve_tri_for_y(model, a, b, c);
+		  Rasterize a triangle defined by points '_a', '_b', and '_c'
+		  into VoxelModel 'm'.
+		 */
+
+		// Temporary voxel model used like a set to avoid adding redundant data.
+		//var tmp_model = new VoxelModel();
+		var tmp_model = model; // FIXME: HACK
+	   
+		// Triangle coordinates are rounded to nearest integer.
+		/*
+		var a = new Coord3d(round(_a.x), round(_a.y), round(_a.z));
+		var b = new Coord3d(round(_b.x), round(_b.y), round(_b.z));
+		var c = new Coord3d(round(_c.x), round(_c.y), round(_c.z));
+		*/
+		var a = _a;
+		var b = _b;
+		var c = _c;
+
+		bool render_for_x = true;
+		bool render_for_y = true;
+		bool render_for_z = true;
+
+		// Check to see if all three coordinates fall on the same
+		// plane.  If so, only render from one perspective:
+		if (a.x == b.x && b.x == c.x) {
+			render_for_x = false; // <-- for sure
+			render_for_y = false; // <-- a guess
 		}
-		else {
-			solve_tri_for_z(model, a, b, c);
+		if (a.y == b.y && b.y == c.y) {
+			render_for_y = false; // <-- for sure
+			render_for_z = false; // <-- a guess
+		}
+		if (a.z == b.z && b.z == c.z) {
+			render_for_x = false; // <-- a guess
+			render_for_z = false; // <-- for sure
+		}
+
+		// Edge case: all three points are the same:
+		if (!render_for_x && !render_for_y && !render_for_z) {
+			model.add((int) a.x, (int) a.y, (int) a.z);
+			return;
+		}
+		
+		/*
+		  To avoid repeating myself, the same rendering function is
+		  used for all three views; thus for two of the views, the
+		  points need to be rotated 90 degrees on some axis, and the
+		  "model.add" function is replaced by a delegate that rotates
+		  them back.  "Rotation" is done by mixing up the coordinate
+		  order.
+		 */
+		if (render_for_x) {
+			var a_shift = new Coord3d(a.z, a.y, a.x);
+			var b_shift = new Coord3d(b.z, b.y, b.x);
+			var c_shift = new Coord3d(c.z, c.y, c.x);
+			rasterize_for_plane((x,y,z) => {tmp_model.add(z, y, x);},
+								a_shift, b_shift, c_shift);
+		}
+		if (render_for_y) {
+			var a_shift = new Coord3d(a.x, a.z, a.y);
+			var b_shift = new Coord3d(b.x, b.z, b.y);
+			var c_shift = new Coord3d(c.x, c.z, c.y);
+			rasterize_for_plane((x,y,z) => {tmp_model.add(x, z, y);},
+								a_shift, b_shift, c_shift);		
+		}
+		if (render_for_z) {
+			rasterize_for_plane((x,y,z) => {tmp_model.add(x, y, z);}, a, b, c);
 		}
 	}
 

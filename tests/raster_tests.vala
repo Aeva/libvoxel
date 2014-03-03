@@ -54,10 +54,10 @@ namespace LibVoxel.Tests {
 		var a = new Coord3d(0, 0, 0);
 		var b = new Coord3d(-5, -4, 9);
 		var c = new Coord3d(6, -7, 11);
-		tri_raster(model, a, b, c);
+		rasterize(model, a, b, c);
 		
 		c = new Coord3d(-7, -10, 0);
-		tri_raster(model, a, b, c);
+		rasterize(model, a, b, c);
 		
 		var export = export_base + "triangle1.stl";
 		stdout.printf(@"--> Triangle test exported to $export\n");
@@ -72,7 +72,7 @@ namespace LibVoxel.Tests {
 		var a = new Coord3d(0, 10, 0);
 		var b = new Coord3d(10, 12, 0);
 		var c = new Coord3d(0, 0, 0);
-		tri_raster(model, a, b, c);
+		rasterize(model, a, b, c);
 		
 		var export = export_base + "triangle2.stl";
 		stdout.printf(@"--> Triangle test exported to $export\n");

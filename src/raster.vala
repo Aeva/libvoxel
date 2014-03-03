@@ -64,7 +64,7 @@ namespace LibVoxel.Raster {
 			double y = low.y;
 			if (x2 != x1) {
 				var i = (x-x1) / (x2-x1);
-				y = floor(mix(low.y, high.y, i));
+				y = round(mix(low.y, high.y, i));
 			}
 			add((int) x, (int) y, z);
 		}
@@ -149,25 +149,15 @@ namespace LibVoxel.Raster {
 	}
 
 
-	public void rasterize(VoxelModel model, Coord3d _a, Coord3d _b, Coord3d _c) {
+	public void rasterize(VoxelModel model, Coord3d a, Coord3d b, Coord3d c) {
 		/*
-		  Rasterize a triangle defined by points '_a', '_b', and '_c'
+		  Rasterize a triangle defined by points 'a', 'b', and 'c'
 		  into VoxelModel 'm'.
 		 */
 
 		// Temporary voxel model used like a set to avoid adding redundant data.
 		//var tmp_model = new VoxelModel();
 		var tmp_model = model; // FIXME: HACK
-	   
-		// Triangle coordinates are rounded to nearest integer.
-		/*
-		var a = new Coord3d(round(_a.x), round(_a.y), round(_a.z));
-		var b = new Coord3d(round(_b.x), round(_b.y), round(_b.z));
-		var c = new Coord3d(round(_c.x), round(_c.y), round(_c.z));
-		*/
-		var a = _a;
-		var b = _b;
-		var c = _c;
 
 		bool render_for_x = true;
 		bool render_for_y = true;

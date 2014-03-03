@@ -193,17 +193,17 @@ namespace LibVoxel.Raster {
 		  order.
 		 */
 		if (render_for_x) {
-			var a_shift = new Coord3d(a.z, a.y, a.x);
-			var b_shift = new Coord3d(b.z, b.y, b.x);
-			var c_shift = new Coord3d(c.z, c.y, c.x);
-			rasterize_for_plane((x,y,z) => {tmp_model.add(z, y, x);},
+			var a_shift = new Coord3d(a.y, a.z, a.x);
+			var b_shift = new Coord3d(b.y, b.z, b.x);
+			var c_shift = new Coord3d(c.y, c.z, c.x);
+			rasterize_for_plane((y,z,x) => {tmp_model.add(x, y, z);},
 								a_shift, b_shift, c_shift);
 		}
 		if (render_for_y) {
-			var a_shift = new Coord3d(a.x, a.z, a.y);
-			var b_shift = new Coord3d(b.x, b.z, b.y);
-			var c_shift = new Coord3d(c.x, c.z, c.y);
-			rasterize_for_plane((x,y,z) => {tmp_model.add(x, z, y);},
+			var a_shift = new Coord3d(a.z, a.x, a.y);
+			var b_shift = new Coord3d(b.z, b.x, b.y);
+			var c_shift = new Coord3d(c.z, c.x, c.y);
+			rasterize_for_plane((z,x,y) => {tmp_model.add(x, y, z);},
 								a_shift, b_shift, c_shift);		
 		}
 		if (render_for_z) {

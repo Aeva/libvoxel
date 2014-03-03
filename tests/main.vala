@@ -62,11 +62,11 @@ namespace LibVoxel.Tests {
 		test_png_import_export(data_path, base_path);
 		
 		raster_tests(data_path, base_path);
-
-		test_stl_export_tests(data_path, base_path);
+		matrix_tests();
 
 		colorfill_tests(data_path, base_path);
 
-		matrix_tests();
+		test_stl_import_tests(data_path, base_path);
+		test_stl_export_tests(data_path, base_path);
 	}
 }

@@ -56,8 +56,8 @@ namespace LibVoxel {
 				string chunk = line[line.index_of("vertex")+7:line.length].chomp();
 				string[] params = chunk.split(" ");
 				var a = double.parse(params[0]) * scale;
-				var b = double.parse(params[0]) * scale;
-				var c = double.parse(params[0]) * scale;
+				var b = double.parse(params[1]) * scale;
+				var c = double.parse(params[2]) * scale;
 				vertices += new Coord3d(a, b, c);
 			}
 		}
@@ -89,7 +89,7 @@ namespace LibVoxel {
 		string peek = (string) buffer;
 		data.seek(0, SeekType.SET);
 
-		double scale = 1.0;
+		double scale = 5.0; // arbitrary scale factor
 
 		if (peek == "solid") {
 			// file is probably ascii formatted

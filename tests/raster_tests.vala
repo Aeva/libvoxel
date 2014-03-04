@@ -61,7 +61,7 @@ namespace LibVoxel.Tests {
 		
 		var export = export_base + "triangle1.stl";
 		stdout.printf(@"--> Triangle test exported to $export\n");
-		export_stl(model, export);
+		export_stl(model, export, 1.0);
 	}
 
 
@@ -76,7 +76,7 @@ namespace LibVoxel.Tests {
 		
 		var export = export_base + "triangle2.stl";
 		stdout.printf(@"--> Triangle test exported to $export\n");
-		export_stl(model, export);
+		export_stl(model, export, 1.0);
 	}
 
 
@@ -145,7 +145,7 @@ namespace LibVoxel.Tests {
 
 		var export = export_base + "frust_raster.stl"; 
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
-		export_stl(model, export);
+		export_stl(model, export, 1.0);
 	}
 
 
@@ -176,7 +176,7 @@ namespace LibVoxel.Tests {
 
 		var export = export_base + "frust_raster2.stl";
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
-		export_stl(model, export);
+		export_stl(model, export, 1.0);
 	}
 
 
@@ -207,7 +207,7 @@ namespace LibVoxel.Tests {
 
 		var export = export_base + "frust_raster3.stl";
 		stdout.printf(@"--> Frustum rasterization test exported to $export\n");
-		export_stl(model, export);
+		export_stl(model, export, 1.0);
 	}
 
 
@@ -227,7 +227,7 @@ namespace LibVoxel.Tests {
 			new Coord3d(-10, 10, -5));
 
 		frustum_raster(model, front, back);
-		export_stl(model, export_base + "frust_raster4.stl");
+		export_stl(model, export_base + "frust_raster4.stl", 1.0);
 	}
 
 

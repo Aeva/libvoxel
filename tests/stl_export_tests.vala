@@ -31,6 +31,6 @@ namespace LibVoxel.Tests {
 		stdout.printf(@" - importing test data from $data_path.\n");
 		var model = import_from_pngs(import_path);
 		stdout.printf(@" - theoretically exporting to $export_path.\n");
-		export_stl(model, export_path);
+		export_stl(model, export_path, 1.0);
 	}
 }

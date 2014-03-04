@@ -22,8 +22,9 @@ using LibVoxel.Math;
 namespace LibVoxel {
 
 
-	public void export_stl(VoxelModel model, string export_path) {
+	public void export_stl(VoxelModel model, string export_path, double resolution) {
 		var vertex_data = new VertexDump(model);
+		double scale = 5.0;
 
 		var file = File.new_for_path(export_path);
 		if (file.query_exists()) {
@@ -41,9 +42,9 @@ namespace LibVoxel {
 				string block = "facet normal 0 0 0\n";
 				block += "    outer loop\n";
 				foreach (var pt in verts) {
-					var x = pt.x;
-					var y = pt.y;
-					var z = pt.z;
+					var x = pt.x / scale;
+					var y = pt.y / scale;
+					var z = pt.z / scale;
 					block += @"        vertex $x $y $z\n";
 				}
 				block += "    endloop\n";

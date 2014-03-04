@@ -36,9 +36,9 @@ namespace LibVoxel.Tests {
 		}
 
 		stdout.printf(@"saved reference to $ref_export\n");
-		export_stl(model, ref_export);
+		export_stl(model, ref_export, 1.0);
 		stdout.printf(@"saved cast to $cast_export\n");
-		export_stl(result, cast_export);
+		export_stl(result, cast_export, 1.0);
 		stdout.printf(@"saved cast to $cast_png_export\n");
 		export_to_pngs(result, cast_png_export);
 	}
